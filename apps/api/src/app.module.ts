@@ -1,0 +1,35 @@
+import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ScheduleModule } from '@nestjs/schedule';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { getDatabaseConfig } from './config/database.config';
+import { PlaybooksModule } from './modules/playbooks/playbooks.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { ProductsModule } from './modules/products/products.module';
+import { CrewMatchModule } from './modules/crew-match/crew-match.module';
+import { AudioWalksModule } from './modules/audio-walks/audio-walks.module';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    ScheduleModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: getDatabaseConfig,
+      inject: [ConfigService],
+    }),
+    AuthModule,
+    PlaybooksModule,
+    ProductsModule,
+    CrewMatchModule,
+    AudioWalksModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
