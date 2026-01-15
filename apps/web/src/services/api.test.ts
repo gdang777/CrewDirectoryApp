@@ -1,28 +1,27 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { ApiClient } from '@crewdirectoryapp/api-client';
 import { apiService } from './api';
 
-// Mock the ApiClient
-vi.mock('@crewdirectoryapp/api-client', () => ({
-  ApiClient: vi.fn().mockImplementation(() => ({
-    get: vi.fn(),
-    post: vi.fn(),
-    setToken: vi.fn(),
-  })),
-}));
+// Create a mock client
+const mockClient = {
+  get: vi.fn(),
+  post: vi.fn(),
+  setToken: vi.fn(),
+};
+
+// Mock the ApiClient class
+vi.mock('@crewdirectoryapp/api-client', () => {
+  return {
+    ApiClient: class {
+      constructor() {
+        return mockClient;
+      }
+    },
+  };
+});
 
 describe('ApiService', () => {
-  let mockClient: any;
-
   beforeEach(() => {
-    // Reset the mock
     vi.clearAllMocks();
-    mockClient = {
-      get: vi.fn(),
-      post: vi.fn(),
-      setToken: vi.fn(),
-    };
-    (ApiClient as any).mockImplementation(() => mockClient);
   });
 
   it('should set token on client', () => {
