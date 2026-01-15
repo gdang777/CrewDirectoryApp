@@ -1,0 +1,136 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Testing
+coverage/
+*.lcov
+.nyc_output
+
+# Production
+build/
+dist/
+out/
+.next/
+
+# Misc
+.DS_Store
+*.pem
+*.log
+*.lock
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IDE - IntelliJ / WebStorm
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# IDE - Cursor
+.cursor/
+
+# React Native
+# OSX
+.DS_Store
+
+# Xcode
+build/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+ios/.xcode.env.local
+
+# Android/IntelliJ
+*.iml
+.idea
+.gradle
+local.properties
+*.apk
+*.ap_
+*.aab
+
+# Android Studio
+*.apk
+*.ap_
+*.aab
+
+# Expo
+.expo/
+.expo-shared/
+dist/
+web-build/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Temporary files
+*.swp
+*.swo
+*~
+.cache/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Docker
+docker-compose.override.yml
+
+# PM2
+.pm2/
+
+# Turborepo
+.turbo/
+
+# Nx
+.nx/cache
+.nx/workspace-data
+
+# OS
+Thumbs.db
