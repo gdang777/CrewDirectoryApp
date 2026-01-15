@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - Comprehensive testing infrastructure with Jest for API and Vitest for web app
 - Unit tests for AppController and AppService
 - Unit tests for PlaybooksService with mocked repositories
@@ -33,6 +34,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dependency tracking documentation (DEPENDENCIES.md)
 - API contract validation decorators
 - Prettier configuration for code formatting
+- Change Impact Checklist for preventing breaking changes
+- ESLint configuration for code quality
+- Commit message linting with commitlint
+- Automated pre-commit hooks with Husky and lint-staged
 - Module B web UI - Product catalog page with filtering and price comparison
 - React Router integration for navigation between pages
 - Product price comparison functionality in web UI
@@ -82,18 +87,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changelog template and contribution guidelines
 
 ### Changed
+
 - N/A
 
 ### Deprecated
+
 - N/A
 
 ### Removed
+
 - N/A
 
 ### Fixed
+
 - N/A
 
 ### Security
+
 - N/A
 
 ---
@@ -101,6 +111,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2025-01-XX
 
 ### Added
+
 - Initial project structure and foundation
 - Core infrastructure setup
 
