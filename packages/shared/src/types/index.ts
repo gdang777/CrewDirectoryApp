@@ -48,6 +48,17 @@ export interface POI {
   metadata?: Record<string, unknown>;
 }
 
+export interface Product {
+  id: string;
+  name: string;
+  description?: string;
+  sku: string;
+  category: string;
+  metadata?: Record<string, unknown>;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface ApiResponse<T> {
   data: T;
   message?: string;

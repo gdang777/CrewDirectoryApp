@@ -8,6 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Module B web UI - Product catalog page with filtering and price comparison
+- React Router integration for navigation between pages
+- Product price comparison functionality in web UI
+- Shopping cart sidebar component
+- Product category filtering (chocolate, cosmetics, spirits)
+- Price delta visualization (percentage difference display)
+- Navigation bar with tabs for Playbooks and Products
+- Product API client methods (getProducts, comparePrices, getProductsWithPriceDelta)
+- Product type definition in shared package
 - Initial project setup with monorepo structure using Turborepo
 - Git repository initialization with comprehensive .gitignore
 - GitHub repository connection and initial push

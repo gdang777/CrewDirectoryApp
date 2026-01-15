@@ -46,6 +46,50 @@ class ApiService {
     const response = await this.client.get<POI[]>(`/playbooks/pois/nearby?${params}`);
     return response.data;
   }
+
+  // Products API
+  async getProducts(category?: string): Promise<Product[]> {
+    const url = category ? `/products?category=${category}` : '/products';
+    const response = await this.client.get<Product[]>(url);
+    return response.data;
+  }
+
+  async getProduct(id: string): Promise<Product> {
+    const response = await this.client.get<Product>(`/products/${id}`);
+    return response.data;
+  }
+
+  async comparePrices(
+    productId: string,
+    cityCode: string,
+    homeBaseCode: string,
+  ): Promise<{ current: any; homeBase: any; deltaPercent: number }> {
+    const params = new URLSearchParams({
+      productId,
+      cityCode,
+      homeBaseCode,
+    });
+    const response = await this.client.get<{
+      current: any;
+      homeBase: any;
+      deltaPercent: number;
+    }>(`/products/compare?${params}`);
+    return response.data;
+  }
+
+  async getProductsWithPriceDelta(
+    cityCode: string,
+    homeBaseCode: string,
+    minDelta: number = 15,
+  ): Promise<Product[]> {
+    const params = new URLSearchParams({
+      cityCode,
+      homeBaseCode,
+      minDelta: minDelta.toString(),
+    });
+    const response = await this.client.get<Product[]>(`/products/price-delta?${params}`);
+    return response.data;
+  }
 }
 
 export const apiService = new ApiService();
