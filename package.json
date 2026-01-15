@@ -12,6 +12,8 @@
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "test:coverage": "turbo run test:cov",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules"
   },

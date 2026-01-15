@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Comprehensive testing infrastructure with Jest for API and Vitest for web app
+- Unit tests for AppController and AppService
+- Unit tests for PlaybooksService with mocked repositories
+- Unit tests for AuthService with JWT and user validation
+- Component tests for LoadingSpinner and ErrorMessage
+- Service tests for API client methods
+- Test coverage configuration with 70% threshold
+- GitHub Actions CI/CD workflow for automated testing
+- Test documentation and best practices guide
+- Test scripts for watch mode, coverage, and CI
+- Test setup files with proper mocks and configurations
 - Module B web UI - Product catalog page with filtering and price comparison
 - React Router integration for navigation between pages
 - Product price comparison functionality in web UI
