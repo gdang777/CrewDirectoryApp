@@ -22,6 +22,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Unit tests for ProductsService with price comparison logic
 - Component tests for PlaybooksPage with loading and error states
 - Test coverage thresholds set to 70% minimum
+- Fixed Jest configuration conflicts
+- Fixed API service test mocking issues
+- Integration tests for Playbooks and Products modules
+- E2E tests for API endpoints
+- API contract tests to prevent breaking changes
+- Pre-commit hooks with Husky for automated testing
+- Lint-staged configuration for running tests on changed files
+- Commit message linting with commitlint
+- Dependency tracking documentation (DEPENDENCIES.md)
+- API contract validation decorators
+- Prettier configuration for code formatting
 - Module B web UI - Product catalog page with filtering and price comparison
 - React Router integration for navigation between pages
 - Product price comparison functionality in web UI
