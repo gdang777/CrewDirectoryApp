@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { Product } from '@crewdirectoryapp/shared';
 import { apiService } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 import './ProductsPage.css';
 
 interface ProductWithPrice extends Product {
@@ -84,11 +86,11 @@ const ProductsPage = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading products...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return <ErrorMessage message={error} onRetry={loadProducts} />;
   }
 
   return (

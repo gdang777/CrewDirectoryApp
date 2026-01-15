@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Navigation bar with tabs for Playbooks and Products
 - Product API client methods (getProducts, comparePrices, getProductsWithPriceDelta)
 - Product type definition in shared package
+- Reusable LoadingSpinner component
+- Reusable ErrorMessage component with retry functionality
+- Enhanced PlaybooksPage with improved loading and error states
+- Enhanced ProductsPage with improved loading and error states
 - Initial project setup with monorepo structure using Turborepo
 - Git repository initialization with comprehensive .gitignore
 - GitHub repository connection and initial push

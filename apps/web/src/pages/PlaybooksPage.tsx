@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import type { Playbook, City } from '@crewdirectoryapp/shared';
 import { apiService } from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
+import ErrorMessage from '../components/ErrorMessage';
 import './PlaybooksPage.css';
 
 const PlaybooksPage = () => {
@@ -34,11 +36,11 @@ const PlaybooksPage = () => {
   };
 
   if (loading) {
-    return <div className="loading">Loading playbooks...</div>;
+    return <LoadingSpinner />;
   }
 
   if (error) {
-    return <div className="error">Error: {error}</div>;
+    return <ErrorMessage message={error} onRetry={loadData} />;
   }
 
   return (
