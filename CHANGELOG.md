@@ -19,6 +19,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test documentation and best practices guide
 - Test scripts for watch mode, coverage, and CI
 - Test setup files with proper mocks and configurations
+- Unit tests for ProductsService with price comparison logic
+- Component tests for PlaybooksPage with loading and error states
+- Test coverage thresholds set to 70% minimum
 - Module B web UI - Product catalog page with filtering and price comparison
 - React Router integration for navigation between pages
 - Product price comparison functionality in web UI
