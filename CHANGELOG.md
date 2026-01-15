@@ -39,6 +39,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - DOCKER_SETUP.md - Docker installation and usage
   - GITHUB_SETUP.md - GitHub connection guide
   - CHANGELOG.md - This file for tracking all changes
+  - CONTRIBUTING.md - Contribution guidelines with changelog workflow
+- Changelog system for tracking all project changes
+- Changelog template and contribution guidelines
 
 ### Changed
 - N/A
