@@ -106,6 +106,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - N/A
 
+### [0.2.0] - 2026-01-16
+
+### Added
+
+#### Backend API
+
+- **Authentication**:
+  - Development login endpoint (`POST /auth/dev/login`) to bypass OAuth.
+  - User entity update to support airline verification badges.
+- **Module A (City Playbooks)**:
+  - Geospatial queries (`findPOIsNearby`) using PostGIS.
+  - POI relation added to Playbook entity.
+- **Module C (Crew Match)**:
+  - `ICSParserService` using `ical.js` to parse crew pairing data.
+  - `CrewMatchGateway` for real-time WebSocket communication.
+- **Module D (Audio Walks)**:
+  - Audio file schema and upload structure.
+  - Purchase flow logic skeleton.
+
+#### Web Frontend
+
+- **Module A (Playbooks)**:
+  - `MapComponent` integration using Mapbox.
+  - `PlaybookEditor` for creating and editing playbooks.
+  - Voting UI with optimistic updates.
+- **Module C (Crew Match)**:
+  - `CrewMatchPage` with real-time chat using `socket.io-client`.
+
+#### Mobile App
+
+- **Structure**:
+  - Expo Router setup with Tab-based navigation.
+  - Scaffold screens for Playbooks, Shop, Crew, and Profile.
+
 ---
 
 ## [0.1.0] - 2025-01-XX

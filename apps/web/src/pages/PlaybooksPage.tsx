@@ -3,6 +3,8 @@ import type { Playbook, City } from '@crewdirectoryapp/shared';
 import { apiService } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
+import MapComponent from '../components/MapComponent';
+import PlaybookEditor from '../components/PlaybookEditor';
 import './PlaybooksPage.css';
 
 const PlaybooksPage = () => {
@@ -10,6 +12,7 @@ const PlaybooksPage = () => {
   const [cities, setCities] = useState<City[]>([]);
   const [selectedCity, setSelectedCity] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [showEditor, setShowEditor] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -20,7 +23,7 @@ const PlaybooksPage = () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       const [playbooksData, citiesData] = await Promise.all([
         apiService.getPlaybooks(selectedCity || undefined),
         apiService.getCities(),
@@ -32,6 +35,15 @@ const PlaybooksPage = () => {
       setError(err instanceof Error ? err.message : 'Failed to load playbooks');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleVote = async (playbookId: string, value: 1 | -1) => {
+    try {
+      await apiService.votePlaybook(playbookId, value);
+      loadData(); // Reload to show updated counts
+    } catch (err) {
+      console.error('Failed to vote:', err);
     }
   };
 
@@ -59,7 +71,22 @@ const PlaybooksPage = () => {
             </option>
           ))}
         </select>
+        <button onClick={() => setShowEditor(true)} className="create-button">
+          + New Playbook
+        </button>
       </div>
+
+      {showEditor && (
+        <PlaybookEditor
+          cities={cities}
+          onClose={() => setShowEditor(false)}
+          onSave={loadData}
+        />
+      )}
+
+      {playbooks.length > 0 && (
+        <MapComponent pois={playbooks.flatMap((p) => p.pois || [])} />
+      )}
 
       <div className="playbooks-grid">
         {playbooks.length === 0 ? (
@@ -71,8 +98,12 @@ const PlaybooksPage = () => {
               <p className="tier-badge">{playbook.tier}</p>
               <p>{playbook.description}</p>
               <div className="votes">
-                <span>👍 {playbook.upvotes}</span>
-                <span>👎 {playbook.downvotes}</span>
+                <button onClick={() => handleVote(playbook.id, 1)}>
+                  👍 {playbook.upvotes}
+                </button>
+                <button onClick={() => handleVote(playbook.id, -1)}>
+                  👎 {playbook.downvotes}
+                </button>
               </div>
             </div>
           ))

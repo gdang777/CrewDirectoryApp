@@ -1,4 +1,11 @@
-import { Controller, Get, Post, UseGuards, Request, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  UseGuards,
+  Request,
+  Body,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
@@ -33,5 +40,17 @@ export class AuthController {
   async revokeVerification(@Request() req: any) {
     await this.authService.revokeVerificationBadge(req.user.id);
     return { message: 'Verification badge revoked' };
+  }
+
+  @Post('dev/login')
+  async devLogin(@Body() body: { email: string; airlineId?: string }) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('Not available in production');
+    }
+    const user = await this.authService.validateUser(
+      body.email,
+      body.airlineId
+    );
+    return this.authService.login(user);
   }
 }

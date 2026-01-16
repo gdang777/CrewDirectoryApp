@@ -7,22 +7,22 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { apiService } from '../services/api';
-import type { Playbook } from '@crewdirectoryapp/shared';
+import type { Product } from '@crewdirectoryapp/shared';
 
-export const PlaybooksScreen = () => {
-  const [playbooks, setPlaybooks] = useState<Playbook[]>([]);
+export const ProductsScreen = () => {
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadPlaybooks();
+    loadProducts();
   }, []);
 
-  const loadPlaybooks = async () => {
+  const loadProducts = async () => {
     try {
-      const data = await apiService.getPlaybooks();
-      setPlaybooks(data);
+      const data = await apiService.getProducts();
+      setProducts(data);
     } catch (error) {
-      console.error('Failed to load playbooks:', error);
+      console.error('Failed to load products:', error);
     } finally {
       setLoading(false);
     }
@@ -39,16 +39,15 @@ export const PlaybooksScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
-        data={playbooks}
+        data={products}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.title}>{item.title}</Text>
-            <Text style={styles.city}>{item.city?.name}</Text>
+            <Text style={styles.title}>{item.name}</Text>
+            <View style={styles.badgeContainer}>
+              <Text style={styles.badge}>{item.category}</Text>
+            </View>
             <Text style={styles.description}>{item.description}</Text>
-            <Text style={styles.votes}>
-              Votes: {item.upvotes - item.downvotes}
-            </Text>
           </View>
         )}
         contentContainerStyle={styles.list}
@@ -86,18 +85,21 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 4,
   },
-  city: {
-    fontSize: 14,
-    color: '#007bff',
+  badgeContainer: {
+    flexDirection: 'row',
     marginBottom: 8,
+  },
+  badge: {
+    backgroundColor: '#e9ecef',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 12,
+    fontSize: 12,
+    color: '#495057',
+    textTransform: 'capitalize',
   },
   description: {
     fontSize: 14,
     color: '#666',
-    marginBottom: 8,
-  },
-  votes: {
-    fontSize: 12,
-    color: '#999',
   },
 });

@@ -1,80 +1,69 @@
+
 .playbooks-page {
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .filters {
-  margin-bottom: 2rem;
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
+  margin-bottom: 2rem;
 }
 
-.filters label {
-  font-weight: 600;
-}
-
-.filters select {
+.create-button {
+  background-color: #28a745;
+  color: white;
+  border: none;
   padding: 0.5rem 1rem;
-  border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
+  cursor: pointer;
+}
+
+.create-button:hover {
+  background-color: #218838;
 }
 
 .playbooks-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .playbook-card {
-  background: white;
-  padding: 1.5rem;
+  border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.playbook-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  padding: 1.5rem;
+  background: white;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .playbook-card h3 {
-  margin: 0 0 0.5rem 0;
-  color: #333;
+  margin-top: 0;
 }
 
 .tier-badge {
   display: inline-block;
   padding: 0.25rem 0.5rem;
-  background: #007bff;
-  color: white;
-  border-radius: 4px;
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-}
-
-.playbook-card p {
-  color: #666;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  background: #eee;
   margin-bottom: 1rem;
-  line-height: 1.5;
 }
 
 .votes {
   display: flex;
   gap: 1rem;
-  font-size: 0.875rem;
-  color: #888;
+  margin-top: 1rem;
 }
 
-.loading,
-.error,
-.no-results {
-  text-align: center;
-  padding: 2rem;
-  color: #666;
+.votes button {
+  background: none;
+  border: 1px solid #ddd;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
-.error {
-  color: #d32f2f;
+.votes button:hover {
+  background: #f8f9fa;
 }

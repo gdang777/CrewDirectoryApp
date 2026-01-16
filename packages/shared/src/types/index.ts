@@ -31,6 +31,7 @@ export interface Playbook {
   city?: City;
   upvotes: number;
   downvotes: number;
+  pois?: POI[];
   createdAt: Date;
   updatedAt: Date;
 }

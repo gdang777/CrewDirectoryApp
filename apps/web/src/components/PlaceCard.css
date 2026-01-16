@@ -1,0 +1,100 @@
+.place-card {
+    display: flex;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 1.25rem;
+    gap: 1rem;
+    transition: background 0.2s, border-color 0.2s;
+}
+
+.place-card:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.place-content {
+    flex: 1;
+}
+
+.place-content h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.place-description {
+    margin: 0 0 0.75rem;
+    color: #a0a0a0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.place-tips {
+    margin: 0 0 0.75rem;
+    color: #00d9ff;
+    font-size: 0.9rem;
+    background: rgba(0, 217, 255, 0.08);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+}
+
+.place-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.added-by {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Voting */
+.place-voting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    min-width: 50px;
+}
+
+.vote-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    width: 36px;
+    height: 28px;
+    border-radius: 6px;
+    color: #666;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-size: 0.8rem;
+}
+
+.vote-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.vote-btn.upvote:hover {
+    color: #00ff88;
+}
+
+.vote-btn.downvote:hover {
+    color: #ff4444;
+}
+
+.vote-score {
+    font-weight: 700;
+    font-size: 1rem;
+    color: #888;
+}
+
+.vote-score.positive {
+    color: #00ff88;
+}
+
+.vote-score.negative {
+    color: #ff4444;
+}
