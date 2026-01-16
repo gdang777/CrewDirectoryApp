@@ -1,100 +1,175 @@
+/* ========================================
+   ENHANCED PLACE CARD STYLES
+   Visual cards with images and ratings
+   ======================================== */
+
+.place-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
 .place-card {
-    display: flex;
     background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 12px;
-    padding: 1.25rem;
-    gap: 1rem;
-    transition: background 0.2s, border-color 0.2s;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+    cursor: pointer;
 }
 
 .place-card:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    border-color: rgba(0, 217, 255, 0.3);
 }
 
-.place-content {
-    flex: 1;
+/* Image Section */
+.place-card .place-image {
+    height: 160px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
 }
 
-.place-content h3 {
+.place-card .category-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: white;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.place-card .rating-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: #fbbf24;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Content Section */
+.place-card .place-content {
+    padding: 1rem;
+}
+
+.place-card .place-name {
     margin: 0 0 0.5rem;
     font-size: 1.1rem;
+    font-weight: 600;
     color: white;
 }
 
-.place-description {
+.place-card .place-description {
     margin: 0 0 0.75rem;
+    font-size: 0.9rem;
     color: #a0a0a0;
-    font-size: 0.95rem;
     line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
-.place-tips {
+.place-card .place-tips {
     margin: 0 0 0.75rem;
+    font-size: 0.85rem;
     color: #00d9ff;
-    font-size: 0.9rem;
     background: rgba(0, 217, 255, 0.08);
     padding: 0.5rem 0.75rem;
-    border-radius: 8px;
+    border-radius: 6px;
 }
 
-.place-meta {
+.place-card .place-tips em {
+    font-style: normal;
+}
+
+/* Footer */
+.place-card .place-footer {
     display: flex;
-    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.place-card .added-by {
     font-size: 0.8rem;
     color: #666;
 }
 
-.added-by {
+/* Vote Buttons */
+.place-card .vote-buttons {
     display: flex;
     align-items: center;
     gap: 0.25rem;
 }
 
-/* Voting */
-.place-voting {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    min-width: 50px;
-}
-
-.vote-btn {
+.place-card .vote-btn {
     background: rgba(255, 255, 255, 0.05);
     border: none;
-    width: 36px;
+    color: #888;
+    width: 28px;
     height: 28px;
     border-radius: 6px;
-    color: #666;
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
-    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    transition: all 0.2s;
 }
 
-.vote-btn:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.vote-btn.upvote:hover {
+.place-card .vote-btn.upvote:hover {
+    background: rgba(0, 255, 136, 0.2);
     color: #00ff88;
 }
 
-.vote-btn.downvote:hover {
-    color: #ff4444;
+.place-card .vote-btn.downvote:hover {
+    background: rgba(255, 100, 100, 0.2);
+    color: #ff6464;
 }
 
-.vote-score {
-    font-weight: 700;
-    font-size: 1rem;
+.place-card .vote-score {
+    min-width: 32px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 600;
     color: #888;
 }
 
-.vote-score.positive {
+.place-card .vote-score.positive {
     color: #00ff88;
 }
 
-.vote-score.negative {
-    color: #ff4444;
+.place-card .vote-score.negative {
+    color: #ff6464;
+}
+
+/* Grid Layout */
+.places-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+    .places-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .place-card .place-image {
+        height: 140px;
+    }
 }

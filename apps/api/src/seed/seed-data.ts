@@ -17,7 +17,7 @@ export async function seedDatabase() {
         country: 'Denmark',
         code: 'CPH',
         coordinates: {
-          type: 'Point',
+          type: 'Point' as const,
           coordinates: [12.5683, 55.6761], // [lng, lat]
         },
       },
@@ -26,7 +26,7 @@ export async function seedDatabase() {
         country: 'Thailand',
         code: 'BKK',
         coordinates: {
-          type: 'Point',
+          type: 'Point' as const,
           coordinates: [100.5018, 13.7563],
         },
       },
@@ -35,7 +35,7 @@ export async function seedDatabase() {
         country: 'UAE',
         code: 'DXB',
         coordinates: {
-          type: 'Point',
+          type: 'Point' as const,
           coordinates: [55.2708, 25.2048],
         },
       },
@@ -44,7 +44,7 @@ export async function seedDatabase() {
         country: 'USA',
         code: 'JFK',
         coordinates: {
-          type: 'Point',
+          type: 'Point' as const,
           coordinates: [-73.7781, 40.6413],
         },
       },
@@ -53,8 +53,8 @@ export async function seedDatabase() {
         country: 'UK',
         code: 'LHR',
         coordinates: {
-          type: 'Point',
-          coordinates: [-0.4543, 51.4700],
+          type: 'Point' as const,
+          coordinates: [-0.4543, 51.47],
         },
       },
     ];

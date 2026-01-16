@@ -95,12 +95,19 @@ describe('AuthService', () => {
         airlineId: null,
         verifiedBadge: false,
       };
-      const updatedUser = { ...mockUser, airlineId: 'airline-1', verifiedBadge: true };
+      const updatedUser = {
+        ...mockUser,
+        airlineId: 'airline-1',
+        verifiedBadge: true,
+      };
 
       mockUserRepository.findOne.mockResolvedValue(mockUser);
       mockUserRepository.save.mockResolvedValue(updatedUser);
 
-      const result = await service.validateUser('test@example.com', 'airline-1');
+      const result = await service.validateUser(
+        'test@example.com',
+        'airline-1'
+      );
 
       expect(result.airlineId).toBe('airline-1');
       expect(result.verifiedBadge).toBe(true);
@@ -126,7 +133,7 @@ describe('AuthService', () => {
 
       expect(result).toHaveProperty('access_token', mockToken);
       expect(result).toHaveProperty('user');
-      expect(result.user).toEqual({
+      expect((result as any).user).toEqual({
         id: mockUser.id,
         email: mockUser.email,
         name: mockUser.name,
@@ -160,7 +167,7 @@ describe('AuthService', () => {
       });
 
       await expect(service.verifyToken('invalid-token')).rejects.toThrow(
-        UnauthorizedException,
+        UnauthorizedException
       );
     });
   });

@@ -1,247 +1,200 @@
-import { ApiClient } from '@crewdirectoryapp/api-client';
-import type { Playbook, City, POI, Product } from '@crewdirectoryapp/shared';
-import { mockPlaybooks, mockCities, mockProducts } from '../data/mockData';
-
+// API Service for connecting frontend to backend
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
-// Flag to use mock data when backend is unavailable
-const USE_MOCK_ON_ERROR = true;
+export interface City {
+  id: string;
+  name: string;
+  country: string;
+  code: string;
+  coordinates: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface POI {
+  id: string;
+  name: string;
+  description: string;
+  category: string;
+  coordinates: {
+    type: 'Point';
+    coordinates: [number, number];
+  };
+  playbookId: string;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Playbook {
+  id: string;
+  title: string;
+  description: string;
+  tier: 'basic' | 'pro';
+  cityId: string;
+  upvotes: number;
+  downvotes: number;
+  pois?: POI[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: string;
+  email: string;
+  name: string;
+  airlineId?: string;
+  verifiedBadge: boolean;
+  karmaScore: number;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  user: User;
+}
 
 class ApiService {
-  private client: ApiClient;
+  private token: string | null = null;
 
   constructor() {
-    this.client = new ApiClient(API_BASE_URL);
+    // Load token from localStorage if available
+    this.token = localStorage.getItem('auth_token');
   }
 
-  setToken(token: string | null): void {
-    this.client.setToken(token);
-  }
+  private async request<T>(
+    endpoint: string,
+    options: RequestInit = {}
+  ): Promise<T> {
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+      ...options.headers,
+    };
 
-  async getPlaybooks(cityId?: string): Promise<Playbook[]> {
-    try {
-      const url = cityId ? `/playbooks?cityId=${cityId}` : '/playbooks';
-      const response = await this.client.get<Playbook[]>(url);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        console.warn('Using mock playbooks data (backend offline)');
-        return cityId
-          ? mockPlaybooks.filter((p) => p.cityId === cityId)
-          : mockPlaybooks;
-      }
-      throw error;
+    if (this.token) {
+      (headers as Record<string, string>)['Authorization'] =
+        `Bearer ${this.token}`;
     }
-  }
 
-  async getPlaybook(id: string): Promise<Playbook> {
-    try {
-      const response = await this.client.get<Playbook>(`/playbooks/${id}`);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        const playbook = mockPlaybooks.find((p) => p.id === id);
-        if (playbook) return playbook;
-      }
-      throw error;
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
+    });
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ message: 'Request failed' }));
+      throw new Error(error.message || `HTTP ${response.status}`);
     }
+
+    return response.json();
   }
 
+  // Auth methods
+  setToken(token: string) {
+    this.token = token;
+    localStorage.setItem('auth_token', token);
+  }
+
+  clearToken() {
+    this.token = null;
+    localStorage.removeItem('auth_token');
+  }
+
+  async login(email: string): Promise<AuthResponse> {
+    const response = await this.request<AuthResponse>('/auth/dev-login', {
+      method: 'POST',
+      body: JSON.stringify({ email }),
+    });
+    this.setToken(response.access_token);
+    return response;
+  }
+
+  // Cities
   async getCities(): Promise<City[]> {
-    try {
-      const response = await this.client.get<City[]>('/playbooks/cities');
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        console.warn('Using mock cities data (backend offline)');
-        return mockCities;
-      }
-      throw error;
-    }
+    return this.request<City[]>('/playbooks/cities');
   }
 
-  async getCityByCode(code: string): Promise<City> {
-    try {
-      const response = await this.client.get<City>(`/playbooks/cities/${code}`);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        const city = mockCities.find((c) => c.code === code);
-        if (city) return city;
-      }
-      throw error;
-    }
+  async getCityByCode(code: string): Promise<City | null> {
+    const cities = await this.getCities();
+    return cities.find((c) => c.code === code) || null;
   }
 
-  async getPOIsNearby(
-    lat: number,
-    lng: number,
-    radius?: number
-  ): Promise<POI[]> {
-    try {
-      const params = new URLSearchParams({
-        lat: lat.toString(),
-        lng: lng.toString(),
-      });
-      if (radius) {
-        params.append('radius', radius.toString());
-      }
-      const response = await this.client.get<POI[]>(
-        `/playbooks/pois/nearby?${params}`
-      );
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        // Return all POIs from all playbooks as mock
-        return mockPlaybooks.flatMap((p) => p.pois || []);
-      }
-      throw error;
-    }
+  async createCity(data: {
+    name: string;
+    country: string;
+    code: string;
+  }): Promise<City> {
+    return this.request<City>('/playbooks/cities', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   }
 
-  async createPlaybook(data: any): Promise<Playbook> {
-    try {
-      const response = await this.client.post<Playbook>('/playbooks', data);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        // Create a mock playbook
-        const newPlaybook: Playbook = {
-          id: String(Date.now()),
-          ...data,
-          upvotes: 0,
-          downvotes: 0,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        mockPlaybooks.push(newPlaybook);
-        console.warn('Created mock playbook (backend offline)', newPlaybook);
-        return newPlaybook;
-      }
-      throw error;
-    }
+  // Playbooks (Places)
+  async getPlaybooks(cityId?: string): Promise<Playbook[]> {
+    const query = cityId ? `?cityId=${cityId}` : '';
+    return this.request<Playbook[]>(`/playbooks${query}`);
   }
 
-  async votePlaybook(playbookId: string, value: 1 | -1): Promise<void> {
-    try {
-      await this.client.post('/playbooks/votes', { playbookId, value });
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        // Update mock playbook votes
-        const playbook = mockPlaybooks.find((p) => p.id === playbookId);
-        if (playbook) {
-          if (value === 1) playbook.upvotes++;
-          else playbook.downvotes++;
-          console.warn('Updated mock vote (backend offline)');
-        }
-        return;
-      }
-      throw error;
-    }
+  async getPlaybookById(id: string): Promise<Playbook> {
+    return this.request<Playbook>(`/playbooks/${id}`);
   }
 
-  // Products API
-  async getProducts(category?: string): Promise<Product[]> {
-    try {
-      const url = category ? `/products?category=${category}` : '/products';
-      const response = await this.client.get<Product[]>(url);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        console.warn('Using mock products data (backend offline)');
-        return category
-          ? mockProducts.filter((p) => p.category === category)
-          : mockProducts;
-      }
-      throw error;
-    }
+  async createPlaybook(data: {
+    title: string;
+    description: string;
+    cityId: string;
+    tier?: 'basic' | 'pro';
+  }): Promise<Playbook> {
+    return this.request<Playbook>('/playbooks', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
   }
 
-  async getProduct(id: string): Promise<Product> {
-    try {
-      const response = await this.client.get<Product>(`/products/${id}`);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        const product = mockProducts.find((p) => p.id === id);
-        if (product) return product;
-      }
-      throw error;
-    }
+  async votePlaybook(id: string, value: 1 | -1): Promise<void> {
+    await this.request(`/playbooks/${id}/vote`, {
+      method: 'POST',
+      body: JSON.stringify({ value }),
+    });
   }
 
-  async createProduct(data: any): Promise<Product> {
-    try {
-      const response = await this.client.post<Product>('/products', data);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        const newProduct: Product = {
-          id: String(Date.now()),
-          ...data,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        };
-        mockProducts.push(newProduct);
-        console.warn('Created mock product (backend offline)', newProduct);
-        return newProduct;
-      }
-      throw error;
+  // POIs (Points of Interest)
+  async addPOI(
+    playbookId: string,
+    data: {
+      name: string;
+      description?: string;
+      category?: string;
+      coordinates: { lat: number; lng: number };
     }
+  ): Promise<POI> {
+    return this.request<POI>(`/playbooks/${playbookId}/pois`, {
+      method: 'POST',
+      body: JSON.stringify({
+        ...data,
+        coordinates: {
+          type: 'Point',
+          coordinates: [data.coordinates.lng, data.coordinates.lat],
+        },
+      }),
+    });
   }
 
-  async comparePrices(
-    productId: string,
-    cityCode: string,
-    homeBaseCode: string
-  ): Promise<{ current: any; homeBase: any; deltaPercent: number }> {
-    try {
-      const params = new URLSearchParams({
-        productId,
-        cityCode,
-        homeBaseCode,
-      });
-      const response = await this.client.get<{
-        current: any;
-        homeBase: any;
-        deltaPercent: number;
-      }>(`/products/compare?${params}`);
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        // Return mock price comparison
-        return {
-          current: { amount: 25.99, currency: 'USD', cityCode },
-          homeBase: { amount: 35.99, currency: 'USD' },
-          deltaPercent: -27.8,
-        };
-      }
-      throw error;
-    }
+  // User profile
+  async getProfile(): Promise<User> {
+    return this.request<User>('/auth/profile');
   }
 
-  async getProductsWithPriceDelta(
-    cityCode: string,
-    homeBaseCode: string,
-    minDelta: number = 15
-  ): Promise<Product[]> {
-    try {
-      const params = new URLSearchParams({
-        cityCode,
-        homeBaseCode,
-        minDelta: minDelta.toString(),
-      });
-      const response = await this.client.get<Product[]>(
-        `/products/price-delta?${params}`
-      );
-      return response.data;
-    } catch (error) {
-      if (USE_MOCK_ON_ERROR) {
-        return mockProducts;
-      }
-      throw error;
-    }
+  // Health check
+  async healthCheck(): Promise<{ status: string }> {
+    return this.request<{ status: string }>('/');
   }
 }
 
 export const apiService = new ApiService();
+export default apiService;

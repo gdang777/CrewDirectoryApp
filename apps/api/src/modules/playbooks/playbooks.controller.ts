@@ -31,16 +31,29 @@ export class PlaybooksController {
     return this.playbooksService.findCityByCode(code);
   }
 
+  @Post('cities')
+  async createCity(
+    @Body()
+    body: {
+      name: string;
+      country: string;
+      code: string;
+      coordinates?: { lat: number; lng: number };
+    }
+  ) {
+    return this.playbooksService.createCity(body);
+  }
+
   @Get('pois/nearby')
   async findPOIsNearby(
     @Query('lat') lat: string,
     @Query('lng') lng: string,
-    @Query('radius') radius?: string,
+    @Query('radius') radius?: string
   ) {
     return this.playbooksService.findPOIsNearby(
       parseFloat(lat),
       parseFloat(lng),
-      radius ? parseFloat(radius) : 5,
+      radius ? parseFloat(radius) : 5
     );
   }
 

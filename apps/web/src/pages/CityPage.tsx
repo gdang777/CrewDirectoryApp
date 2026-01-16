@@ -39,7 +39,16 @@ const CityPage = () => {
   const filteredPlaces = places.filter((p) => p.category === activeCategory);
 
   const handleAddPlace = (
-    newPlace: Omit<Place, 'id' | 'upvotes' | 'downvotes' | 'createdAt'>
+    newPlace: Omit<
+      Place,
+      | 'id'
+      | 'upvotes'
+      | 'downvotes'
+      | 'createdAt'
+      | 'imageUrl'
+      | 'rating'
+      | 'reviewCount'
+    >
   ) => {
     const place: Place = {
       ...newPlace,
@@ -47,6 +56,10 @@ const CityPage = () => {
       upvotes: 0,
       downvotes: 0,
       createdAt: new Date(),
+      imageUrl:
+        'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=300&fit=crop',
+      rating: 0,
+      reviewCount: 0,
     };
     mockPlaces.push(place);
     setPlaces([...places, place]);
@@ -119,7 +132,7 @@ const CityPage = () => {
             </button>
           </div>
         ) : (
-          <div className="places-list">
+          <div className="places-grid">
             {filteredPlaces
               .sort(
                 (a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes)

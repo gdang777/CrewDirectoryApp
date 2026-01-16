@@ -3,6 +3,16 @@ import type { City } from '@crewdirectoryapp/shared';
 // Place categories
 export type PlaceCategory = 'eat' | 'drink' | 'shop' | 'visit';
 
+// Comment interface
+export interface PlaceComment {
+  id: string;
+  userId: string;
+  userName: string;
+  userAirline: string;
+  text: string;
+  createdAt: Date;
+}
+
 // Place interface
 export interface Place {
   id: string;
@@ -15,6 +25,10 @@ export interface Place {
   upvotes: number;
   downvotes: number;
   createdAt: Date;
+  imageUrl: string;
+  rating: number;
+  reviewCount: number;
+  comments?: PlaceComment[];
 }
 
 // Mock Cities with images
@@ -115,6 +129,28 @@ export const mockPlaces: Place[] = [
     upvotes: 42,
     downvotes: 2,
     createdAt: new Date('2025-06-15'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400&h=300&fit=crop',
+    rating: 4.8,
+    reviewCount: 42,
+    comments: [
+      {
+        id: 'c1',
+        userId: 'u1',
+        userName: 'Anna K.',
+        userAirline: 'SAS',
+        text: 'Best coffee in Copenhagen! The flat white is incredible.',
+        createdAt: new Date('2025-06-20'),
+      },
+      {
+        id: 'c2',
+        userId: 'u2',
+        userName: 'Mike T.',
+        userAirline: 'United',
+        text: 'Great spot for a layover morning coffee.',
+        createdAt: new Date('2025-07-01'),
+      },
+    ],
   },
   {
     id: '2',
@@ -128,6 +164,10 @@ export const mockPlaces: Place[] = [
     upvotes: 38,
     downvotes: 1,
     createdAt: new Date('2025-05-20'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&h=300&fit=crop',
+    rating: 4.7,
+    reviewCount: 38,
   },
   {
     id: '3',
@@ -139,6 +179,10 @@ export const mockPlaces: Place[] = [
     upvotes: 25,
     downvotes: 3,
     createdAt: new Date('2025-07-10'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=400&h=300&fit=crop',
+    rating: 4.3,
+    reviewCount: 25,
   },
   {
     id: '4',
@@ -152,6 +196,20 @@ export const mockPlaces: Place[] = [
     upvotes: 56,
     downvotes: 0,
     createdAt: new Date('2025-04-01'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1513622470522-26c3c8a854bc?w=400&h=300&fit=crop',
+    rating: 4.9,
+    reviewCount: 56,
+    comments: [
+      {
+        id: 'c3',
+        userId: 'u3',
+        userName: 'Sarah L.',
+        userAirline: 'Lufthansa',
+        text: 'Must visit! The colorful houses are even better in person.',
+        createdAt: new Date('2025-04-15'),
+      },
+    ],
   },
 
   // Bangkok
@@ -166,6 +224,10 @@ export const mockPlaces: Place[] = [
     upvotes: 89,
     downvotes: 4,
     createdAt: new Date('2025-03-15'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1559314809-0d155014e29e?w=400&h=300&fit=crop',
+    rating: 4.9,
+    reviewCount: 89,
   },
   {
     id: '6',
@@ -178,6 +240,10 @@ export const mockPlaces: Place[] = [
     upvotes: 67,
     downvotes: 2,
     createdAt: new Date('2025-08-22'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=400&h=300&fit=crop',
+    rating: 4.6,
+    reviewCount: 67,
   },
   {
     id: '7',
@@ -190,6 +256,10 @@ export const mockPlaces: Place[] = [
     upvotes: 54,
     downvotes: 8,
     createdAt: new Date('2025-09-10'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop',
+    rating: 4.4,
+    reviewCount: 54,
   },
   {
     id: '8',
@@ -202,6 +272,10 @@ export const mockPlaces: Place[] = [
     upvotes: 78,
     downvotes: 1,
     createdAt: new Date('2025-02-28'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1563492065599-3520f775eeed?w=400&h=300&fit=crop',
+    rating: 4.8,
+    reviewCount: 78,
   },
 
   // Dubai
@@ -215,6 +289,10 @@ export const mockPlaces: Place[] = [
     upvotes: 45,
     downvotes: 2,
     createdAt: new Date('2025-07-05'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1529006557810-274b9b2fc783?w=400&h=300&fit=crop',
+    rating: 4.6,
+    reviewCount: 45,
   },
   {
     id: '10',
@@ -227,6 +305,10 @@ export const mockPlaces: Place[] = [
     upvotes: 52,
     downvotes: 5,
     createdAt: new Date('2025-06-18'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1578916171728-46686eac8d58?w=400&h=300&fit=crop',
+    rating: 4.5,
+    reviewCount: 52,
   },
   {
     id: '11',
@@ -239,6 +321,10 @@ export const mockPlaces: Place[] = [
     upvotes: 61,
     downvotes: 0,
     createdAt: new Date('2025-05-01'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&h=300&fit=crop',
+    rating: 4.9,
+    reviewCount: 61,
   },
 
   // New York
@@ -253,6 +339,10 @@ export const mockPlaces: Place[] = [
     upvotes: 73,
     downvotes: 3,
     createdAt: new Date('2025-04-12'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&h=300&fit=crop',
+    rating: 4.7,
+    reviewCount: 73,
   },
   {
     id: '13',
@@ -264,6 +354,10 @@ export const mockPlaces: Place[] = [
     upvotes: 88,
     downvotes: 1,
     createdAt: new Date('2025-03-20'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1534430480872-3498386e7856?w=400&h=300&fit=crop',
+    rating: 4.8,
+    reviewCount: 88,
   },
   {
     id: '14',
@@ -276,6 +370,10 @@ export const mockPlaces: Place[] = [
     upvotes: 39,
     downvotes: 6,
     createdAt: new Date('2025-08-05'),
+    imageUrl:
+      'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=400&h=300&fit=crop',
+    rating: 4.3,
+    reviewCount: 39,
   },
 ];
 

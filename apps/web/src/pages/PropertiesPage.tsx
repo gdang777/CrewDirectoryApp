@@ -57,7 +57,9 @@ const PropertiesPage = () => {
             </Link>
             <a href="#">💼 Gigs</a>
           </div>
-          <button className="nav-cta">Sign In</button>
+          <Link to="/auth" className="nav-cta">
+            Sign In
+          </Link>
         </div>
       </nav>
 

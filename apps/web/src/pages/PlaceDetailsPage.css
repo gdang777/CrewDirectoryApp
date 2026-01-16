@@ -1,0 +1,415 @@
+/* ========================================
+   PLACE DETAILS PAGE STYLES
+   Dark theme with hero image and comments
+   ======================================== */
+
+.place-details-page {
+    min-height: 100vh;
+    background: #0f0f1a;
+    color: white;
+}
+
+.place-details-page.not-found {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.place-details-page.not-found a {
+    color: #00d9ff;
+}
+
+/* Navigation */
+.details-nav {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(15, 15, 26, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+.details-nav .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.details-nav .nav-logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #00d9ff;
+    text-decoration: none;
+}
+
+.details-nav .nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.details-nav .nav-links a {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.details-nav .nav-links a:hover {
+    color: #00d9ff;
+}
+
+.details-nav .nav-cta {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+/* Hero */
+.place-hero {
+    height: 400px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.place-hero .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15, 15, 26, 1) 0%, rgba(15, 15, 26, 0.5) 50%, rgba(15, 15, 26, 0.3) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 2rem;
+}
+
+.place-hero .back-link {
+    position: absolute;
+    top: 80px;
+    left: 2rem;
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+}
+
+.place-hero .back-link:hover {
+    opacity: 1;
+}
+
+.place-hero .place-header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.place-hero .category-badge {
+    display: inline-block;
+    background: rgba(0, 217, 255, 0.2);
+    color: #00d9ff;
+    padding: 0.35rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    margin-bottom: 0.75rem;
+}
+
+.place-hero h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+}
+
+.place-hero .location {
+    color: #a0a0a0;
+    font-size: 1rem;
+    margin: 0;
+}
+
+/* Main Content */
+.place-main {
+    padding: 2rem;
+}
+
+.content-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 400px;
+    gap: 2rem;
+}
+
+/* Details Section */
+.place-details {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.stats-row {
+    display: flex;
+    gap: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: white;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #666;
+}
+
+.description-section h2,
+.tips-section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 0.75rem;
+}
+
+.description-section p,
+.tips-section p {
+    color: #a0a0a0;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.tips-section {
+    background: rgba(0, 217, 255, 0.05);
+    border: 1px solid rgba(0, 217, 255, 0.1);
+    border-radius: 12px;
+    padding: 1.25rem;
+}
+
+.tips-section h2 {
+    color: #00d9ff;
+}
+
+.tips-section p {
+    color: #00d9ff;
+    opacity: 0.9;
+}
+
+.actions-row {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
+
+.action-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+    font-weight: 600;
+}
+
+.action-btn.primary:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+}
+
+/* Comments Section */
+.comments-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 1.5rem;
+    height: fit-content;
+}
+
+.comments-section h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin: 0 0 1rem;
+}
+
+/* Comment Form */
+.comment-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.comment-form textarea {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: white;
+    font-size: 0.9rem;
+    resize: none;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.comment-form textarea:focus {
+    border-color: #00d9ff;
+}
+
+.comment-form textarea::placeholder {
+    color: #666;
+}
+
+.comment-form button {
+    align-self: flex-end;
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.comment-form button:hover:not(:disabled) {
+    transform: scale(1.02);
+}
+
+.comment-form button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Comments List */
+.comments-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.no-comments {
+    text-align: center;
+    padding: 2rem 1rem;
+    color: #666;
+}
+
+.comment-card {
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 10px;
+    padding: 1rem;
+}
+
+.comment-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.user-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.user-airline {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.comment-date {
+    font-size: 0.75rem;
+    color: #555;
+}
+
+.comment-text {
+    margin: 0;
+    color: #a0a0a0;
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .content-container {
+        grid-template-columns: 1fr;
+    }
+
+    .comments-section {
+        order: -1;
+    }
+}
+
+@media (max-width: 768px) {
+    .details-nav .nav-links {
+        display: none;
+    }
+
+    .place-hero {
+        height: 300px;
+    }
+
+    .place-hero h1 {
+        font-size: 1.75rem;
+    }
+
+    .stats-row {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .actions-row {
+        flex-wrap: wrap;
+    }
+}

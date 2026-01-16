@@ -30,7 +30,9 @@ const HomePage = () => {
             <Link to="/properties">🏠 Properties</Link>
             <a href="#about">💼 Gigs</a>
           </div>
-          <button className="nav-cta">Sign In</button>
+          <Link to="/auth" className="nav-cta">
+            Sign In
+          </Link>
         </div>
       </nav>
 
@@ -89,7 +91,7 @@ const HomePage = () => {
               </Link>
             ))}
           </div>
-          <Link to="/" className="view-all-btn">
+          <Link to="/cities" className="view-all-btn">
             View All Cities →
           </Link>
         </div>

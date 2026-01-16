@@ -18,11 +18,12 @@ export class PlaybooksService {
     @InjectRepository(Vote)
     private voteRepository: Repository<Vote>,
     @InjectRepository(User)
-    private userRepository: Repository<User>,
+    private userRepository: Repository<User>
   ) {}
 
   async findAll(cityId?: string): Promise<Playbook[]> {
-    const query = this.playbookRepository.createQueryBuilder('playbook')
+    const query = this.playbookRepository
+      .createQueryBuilder('playbook')
       .leftJoinAndSelect('playbook.city', 'city')
       .leftJoinAndSelect('playbook.pois', 'pois');
 
@@ -46,7 +47,10 @@ export class PlaybooksService {
     return playbook;
   }
 
-  async create(createDto: CreatePlaybookDto, userId: string): Promise<Playbook> {
+  async create(
+    createDto: CreatePlaybookDto,
+    userId: string
+  ): Promise<Playbook> {
     const city = await this.cityRepository.findOne({
       where: { id: createDto.cityId },
     });
@@ -63,6 +67,39 @@ export class PlaybooksService {
     return this.playbookRepository.save(playbook);
   }
 
+  async createCity(data: {
+    name: string;
+    country: string;
+    code: string;
+    coordinates?: { lat: number; lng: number };
+  }): Promise<City> {
+    // Check if city already exists
+    const existing = await this.cityRepository.findOne({
+      where: { code: data.code.toUpperCase() },
+    });
+
+    if (existing) {
+      throw new Error(`City with code ${data.code} already exists`);
+    }
+
+    const city = this.cityRepository.create({
+      name: data.name,
+      country: data.country,
+      code: data.code.toUpperCase(),
+      coordinates: data.coordinates
+        ? {
+            type: 'Point' as const,
+            coordinates: [data.coordinates.lng, data.coordinates.lat],
+          }
+        : {
+            type: 'Point' as const,
+            coordinates: [0, 0], // Default coordinates
+          },
+    });
+
+    return this.cityRepository.save(city);
+  }
+
   async createPOI(createDto: CreatePOIDto): Promise<POI> {
     const playbook = await this.playbookRepository.findOne({
       where: { id: createDto.playbookId },
@@ -70,7 +107,7 @@ export class PlaybooksService {
 
     if (!playbook) {
       throw new NotFoundException(
-        `Playbook with ID ${createDto.playbookId} not found`,
+        `Playbook with ID ${createDto.playbookId} not found`
       );
     }
 
@@ -85,7 +122,7 @@ export class PlaybooksService {
   async findPOIsNearby(
     lat: number,
     lng: number,
-    radiusKm: number = 5,
+    radiusKm: number = 5
   ): Promise<POI[]> {
     // PostGIS query to find POIs within radius
     return this.poiRepository
@@ -96,19 +133,22 @@ export class PlaybooksService {
           ST_MakePoint(:lng, :lat)::geography,
           :radius
         )`,
-        { lng, lat, radius: radiusKm * 1000 },
+        { lng, lat, radius: radiusKm * 1000 }
       )
       .getMany();
   }
 
-  async createEdit(createDto: CreateEditDto, userId: string): Promise<PlaybookEdit> {
+  async createEdit(
+    createDto: CreateEditDto,
+    userId: string
+  ): Promise<PlaybookEdit> {
     const playbook = await this.playbookRepository.findOne({
       where: { id: createDto.playbookId },
     });
 
     if (!playbook) {
       throw new NotFoundException(
-        `Playbook with ID ${createDto.playbookId} not found`,
+        `Playbook with ID ${createDto.playbookId} not found`
       );
     }
 
@@ -151,7 +191,7 @@ export class PlaybooksService {
 
     if (!playbook) {
       throw new NotFoundException(
-        `Playbook with ID ${voteDto.playbookId} not found`,
+        `Playbook with ID ${voteDto.playbookId} not found`
       );
     }
 
@@ -199,7 +239,10 @@ export class PlaybooksService {
     });
   }
 
-  private async updateUserKarma(userId: string, voteValue: number): Promise<void> {
+  private async updateUserKarma(
+    userId: string,
+    voteValue: number
+  ): Promise<void> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
     });
