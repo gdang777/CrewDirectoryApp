@@ -10,6 +10,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
 import { CrewMatchModule } from './modules/crew-match/crew-match.module';
 import { AudioWalksModule } from './modules/audio-walks/audio-walks.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { UsersModule } from './modules/users/users.module';
+import { PlacesModule } from './modules/places/places.module';
 
 @Module({
   imports: [
@@ -28,6 +31,9 @@ import { AudioWalksModule } from './modules/audio-walks/audio-walks.module';
     ProductsModule,
     CrewMatchModule,
     AudioWalksModule,
+    AdminModule,
+    UsersModule,
+    PlacesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

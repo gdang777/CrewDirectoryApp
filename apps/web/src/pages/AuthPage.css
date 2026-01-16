@@ -103,6 +103,33 @@
     margin: 0 0 1.5rem;
 }
 
+/* Auth Messages */
+.auth-message {
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.auth-error {
+    background: rgba(255, 82, 82, 0.15);
+    border: 1px solid rgba(255, 82, 82, 0.3);
+    color: #ff5252;
+}
+
+.auth-success {
+    background: rgba(0, 255, 136, 0.15);
+    border: 1px solid rgba(0, 255, 136, 0.3);
+    color: #00ff88;
+}
+
+.form-hint {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
 /* Tabs */
 .auth-tabs {
     display: flex;

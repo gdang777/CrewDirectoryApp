@@ -5,14 +5,44 @@ import {
   UseGuards,
   Request,
   Body,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { AuthGuard } from '@nestjs/passport';
+import { RegisterDto, LoginDto } from './dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Post('register')
+  async register(@Body() registerDto: RegisterDto) {
+    return this.authService.register(registerDto);
+  }
+
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async login(@Body() loginDto: LoginDto) {
+    const user = await this.authService.validateUserCredentials(loginDto);
+    return this.authService.login(user);
+  }
+
+  @Get('profile')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Request() req: any) {
+    return {
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      airlineId: req.user.airlineId,
+      verifiedBadge: req.user.verifiedBadge,
+      karmaScore: req.user.karmaScore,
+    };
+  }
 
   @Get('oauth')
   @UseGuards(AuthGuard('oauth2'))
@@ -42,6 +72,7 @@ export class AuthController {
     return { message: 'Verification badge revoked' };
   }
 
+  // Dev-only login endpoint for testing
   @Post('dev/login')
   async devLogin(@Body() body: { email: string; airlineId?: string }) {
     if (process.env.NODE_ENV === 'production') {

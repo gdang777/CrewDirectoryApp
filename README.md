@@ -5,6 +5,7 @@ A comprehensive mobile and web application for airline crew members to discover 
 ## Architecture
 
 This is a monorepo containing:
+
 - **Web App**: React + TypeScript + Vite
 - **Mobile App**: React Native + TypeScript + Expo
 - **Backend API**: NestJS + TypeScript + PostgreSQL + PostGIS + Redis
@@ -12,7 +13,7 @@ This is a monorepo containing:
 ## Modules (MVP)
 
 - **Module A**: Crew-verified City Playbooks
-- **Module B**: Layover Buy-List & Crew-Cart
+- **Module B**: Layover Shopping Guides (Best buys & Price tips)
 - **Module C**: Same-Trip Crew Match
 - **Module D**: Crew-Guide Live Audio Walk
 

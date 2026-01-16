@@ -1,0 +1,109 @@
+.shopping-section {
+    animation: fadeIn 0.5s ease-out;
+}
+
+.shopping-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.header-text h2 {
+    margin: 0 0 0.5rem;
+    font-size: 1.8rem;
+    color: white;
+}
+
+.header-text p {
+    margin: 0;
+    color: #888;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.home-base-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.home-base-selector label {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.home-base-selector select {
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+
+.add-tip-btn {
+    padding: 0.6rem 1.2rem;
+    background: #00ff88;
+    color: #0f0f1a;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.add-tip-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 255, 136, 0.3);
+}
+
+.shopping-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.loading-state,
+.error-state,
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 12px;
+    color: #888;
+}
+
+.error-state {
+    color: #ff4d4d;
+    background: rgba(255, 77, 77, 0.1);
+}
+
+@media (max-width: 768px) {
+    .shopping-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1.5rem;
+    }
+
+    .header-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .home-base-selector {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .home-base-selector select {
+        width: 100%;
+    }
+}

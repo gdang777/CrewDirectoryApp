@@ -20,12 +20,17 @@
 - [x] **Seed Data** - 5 cities (Copenhagen, Bangkok, Dubai, New York, London) + 6 products
 - [x] **Environment Configuration** - DATABASE_URL with SSL support for cloud connections
 
-### 2. Authentication (Frontend Only)
+### 2. Authentication (Full Stack) ✨ NEW
 
-- [x] **AuthPage** - Login and Sign Up tabs with forms
-- [x] **Form Fields** - Email, password, first name, last name, airline selection
-- [x] **Dark Theme** - Consistent styling with app design
-- [x] **Route** - `/auth` accessible from navigation
+- [x] **User Registration** - Sign up with email, password, name, and optional airline
+- [x] **User Login** - Email/password authentication with JWT tokens
+- [x] **Password Hashing** - Secure bcrypt hashing (10 rounds)
+- [x] **JWT Tokens** - 7-day expiry, secure token generation and validation
+- [x] **Protected Routes** - JwtAuthGuard for securing endpoints
+- [x] **Profile Endpoint** - GET /auth/profile returns current user
+- [x] **AuthPage UI** - Login and Sign Up forms with error/success feedback
+- [x] **AuthContext** - React context for app-wide auth state management
+- [x] **Token Persistence** - Tokens saved to localStorage
 
 ### 3. City Directory
 
@@ -51,11 +56,36 @@
 ### 6. API Integration
 
 - [x] **API Service** (`apps/web/src/services/api.ts`) - Full API client with:
-  - Auth methods (login, profile)
+  - Auth methods (login, signup, logout, profile)
   - Cities CRUD operations
   - Playbooks/Places CRUD
   - Voting system
+  - Admin endpoints (stats, users, listings)
+  - User endpoints (profile, saved listings)
 - [x] **React Hooks** (`useCities.ts`) - Data fetching with refetch capability
+
+### 7. User Profiles & Dashboards
+
+- [x] **User Roles** - Three roles: User, Admin, Moderator
+- [x] **RolesGuard & Decorator** - Role-based access control for API endpoints
+- [x] **User Dashboard** - Profile, stats, listings, saved places
+- [x] **Admin Dashboard** - Stats, user management, listings overview
+- [x] **Profile Editor** - Update name and airline
+- [x] **Saved Listings** - Save/unsave places functionality
+- [x] **Protected Routes** - Role-based frontend routing
+- [x] **Seeded Admin User** - admin@crewlounge.com / admin123
+
+### 8. Places API & Persistence ✨ NEW
+
+- [x] **Place Entity** - Name, description, tips, category, city relation, ratings
+- [x] **Comments with Ratings** - Users can leave reviews with 1-5 star ratings
+- [x] **Voting Persistence** - Upvote/downvote with toggle, database stored
+- [x] **Places Endpoints** - Full CRUD, filtering by city/category
+- [x] **StarRating Component** - Reusable display + interactive mode
+- [x] **Enhanced PlaceDetailsPage** - API integration, voting, comments, glassmorphism
+- [x] **CityPage API Integration** - Real places from database
+- [x] **10 Seeded Places** - Copenhagen, Bangkok, Dubai, New York
+- [x] **Add Place Feature** - UI for users to submit new places
 
 ---
 
@@ -69,11 +99,7 @@ _No features currently in progress_
 
 ### High Priority
 
-- [ ] **Backend Authentication** - JWT token validation, protected routes
-- [ ] **User Profiles** - View/edit profile, karma score display
-- [ ] **Places API** - CRUD operations for places (currently mock data)
-- [ ] **Comments Persistence** - Save comments to database
-- [ ] **Voting Persistence** - Save votes to database
+- [ ] **Image Upload** - Real image upload instead of URLs
 
 ### Medium Priority
 
@@ -82,13 +108,13 @@ _No features currently in progress_
 - [ ] **Filtering & Sorting** - Filter by category, rating, distance
 - [ ] **Image Upload** - Upload images for places/properties
 - [ ] **Maps Integration** - Show locations on map (Mapbox)
+- [ ] **Moderator Dashboard** - Content moderation queue
 
 ### Lower Priority
 
 - [ ] **Mobile App Parity** - React Native app features
 - [ ] **Push Notifications** - New comments, votes, etc.
 - [ ] **Email Verification** - Verify airline email addresses
-- [ ] **Admin Dashboard** - Moderate content, manage users
 
 ---
 
@@ -103,6 +129,117 @@ _No features currently in progress_
 ---
 
 ## 📜 Change Log
+
+### 2026-01-16 - Places API, Comments, Voting & Star Ratings
+
+**Added:**
+
+- `Place` entity with name, description, tips, category, city relation, ratings
+- `Comment` entity with text and 1-5 star rating
+- `PlaceVote` entity for upvote/downvote with toggle behavior
+- PlacesModule with full CRUD, comments, and voting endpoints
+- `StarRating` component (reusable, display + interactive modes)
+- Enhanced `PlaceDetailsPage` with API integration, voting, comments
+- Updated `CityPage` to fetch places from API with category counts
+- Updated `PlaceCard` with star ratings instead of numeric
+- 10 sample places seeded across 4 cities
+
+**API Endpoints:**
+
+| Endpoint               | Method | Description                                      |
+| ---------------------- | ------ | ------------------------------------------------ |
+| `/places`              | GET    | List places (filter by cityId/cityCode/category) |
+| `/places/:id`          | GET    | Get place with comments                          |
+| `/places`              | POST   | Create new place                                 |
+| `/places/:id`          | PATCH  | Update place                                     |
+| `/places/:id/comments` | GET    | Get comments                                     |
+| `/places/:id/comments` | POST   | Add comment with rating                          |
+| `/places/:id/vote`     | POST   | Vote (toggles on repeat)                         |
+| `/places/:id/vote`     | GET    | Get user's current vote                          |
+
+**Technical Notes:**
+
+- Average rating calculated from comment ratings
+- Comment/Vote count logic optimistic updates
+
+### 2026-01-16 - Add Place Feature
+
+**Added:**
+
+- `AddPlaceModal` connected to backend API
+- "Add Place" button on `CityPage` (authenticated users only)
+- Proper form validation and error handling
+- Category-based random image placeholders if no URL provided
+- Automatic list refresh after submission automatically
+- Comments include user relation for display
+
+### 2026-01-16 - Backend Authentication Implementation
+
+**Added:**
+
+- Bcrypt password hashing for secure credential storage
+- `POST /auth/register` endpoint for user registration
+- `POST /auth/login` endpoint for user login with password
+- `GET /auth/profile` protected endpoint for current user
+- `RegisterDto` and `LoginDto` with validation (class-validator)
+- `firstName`, `lastName`, `password` fields to User entity
+- `AuthContext` React context for frontend auth state
+- Signup method in API service
+- Error/success message display in AuthPage
+- Automatic redirect to home after login/signup
+
+**Changed:**
+
+- Updated `AuthService` with bcrypt, register/validateCredentials methods
+- Fixed `JwtStrategy` validation bug (was re-extracting token incorrectly)
+- Updated `AuthController` with proper endpoints and HTTP status codes
+- Updated `api.ts` with full signup/login implementation
+- Wrapped `App.tsx` with `AuthProvider`
+
+**Technical Notes:**
+
+- Password hashing uses bcrypt with 10 salt rounds
+- JWT tokens expire after 7 days
+- Duplicate email registration returns 409 Conflict
+- Wrong password returns 401 Unauthorized
+- All auth state persisted to localStorage
+
+### 2026-01-16 - User Profiles & Role-Based Dashboards
+
+**Added:**
+
+- `UserRole` enum (user, admin, moderator) to User entity
+- `RolesGuard` and `@Roles()` decorator for route protection
+- `AdminModule` with stats, user management, listings endpoints
+- `UsersModule` with profile, saved listings endpoints
+- `SavedListing` entity for saving places
+- `UserDashboard` page with profile, stats, listings
+- `AdminDashboard` page with role management, all users, all listings
+- `ProfilePage` for editing user info
+- `ProtectedRoute` component for frontend role checks
+- Database migration for role and saved_listings table
+- Seeded admin user (admin@crewlounge.com) and moderator user
+
+**API Endpoints:**
+
+| Endpoint                | Method      | Description             |
+| ----------------------- | ----------- | ----------------------- |
+| `/admin/stats`          | GET         | Dashboard statistics    |
+| `/admin/users`          | GET         | Paginated user list     |
+| `/admin/users/recent`   | GET         | Users from last 7 days  |
+| `/admin/listings`       | GET         | All playbooks           |
+| `/admin/users/:id/role` | PATCH       | Change user role        |
+| `/users/profile`        | GET/PATCH   | Get/update profile      |
+| `/users/stats`          | GET         | User's stats            |
+| `/users/listings`       | GET         | User's created listings |
+| `/users/saved`          | GET         | User's saved listings   |
+| `/users/saved/:id`      | POST/DELETE | Save/unsave listing     |
+
+**Frontend Routes:**
+
+- `/dashboard` - User dashboard (auth required)
+- `/admin` - Admin dashboard (admin role required)
+- `/profile` - Edit profile page (auth required)
 
 ### 2026-01-16 - Supabase & Cities Features
 
@@ -172,7 +309,7 @@ _No features currently in progress_
 DATABASE_URL=postgresql://postgres.xxx:PASSWORD@aws-1-us-east-1.pooler.supabase.com:6543/postgres?pgbouncer=true
 NODE_ENV=development
 PORT=3001
-JWT_SECRET=your-secret-key
+JWT_SECRET=your-secret-key-min-32-chars
 ```
 
 **Frontend (`apps/web/.env`):**
@@ -185,14 +322,19 @@ VITE_API_URL=http://localhost:3001
 
 ## 📁 Key Files Reference
 
-| File                                       | Purpose                    |
-| ------------------------------------------ | -------------------------- |
-| `apps/api/src/config/database.config.ts`   | Database connection config |
-| `apps/api/src/seed/seed-data.ts`           | Database seeding script    |
-| `apps/web/src/services/api.ts`             | Frontend API client        |
-| `apps/web/src/hooks/useCities.ts`          | React hook for cities      |
-| `apps/web/src/pages/AllCitiesPage.tsx`     | All cities display         |
-| `apps/web/src/components/AddCityModal.tsx` | Add city form              |
+| File                                           | Purpose                     |
+| ---------------------------------------------- | --------------------------- |
+| `apps/api/src/config/database.config.ts`       | Database connection config  |
+| `apps/api/src/seed/seed-data.ts`               | Database seeding script     |
+| `apps/api/src/modules/auth/auth.service.ts`    | Auth logic with bcrypt      |
+| `apps/api/src/modules/auth/auth.controller.ts` | Auth API endpoints          |
+| `apps/api/src/modules/auth/dto/`               | Register and Login DTOs     |
+| `apps/web/src/services/api.ts`                 | Frontend API client         |
+| `apps/web/src/context/AuthContext.tsx`         | React auth state management |
+| `apps/web/src/hooks/useCities.ts`              | React hook for cities       |
+| `apps/web/src/pages/AuthPage.tsx`              | Login/Signup UI             |
+| `apps/web/src/pages/AllCitiesPage.tsx`         | All cities display          |
+| `apps/web/src/components/AddCityModal.tsx`     | Add city form               |
 
 ---
 

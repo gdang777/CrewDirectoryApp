@@ -1,71 +1,84 @@
-import React from 'react';
-import Map, { Marker, Popup, NavigationControl } from 'react-map-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import type { POI } from '@crewdirectoryapp/shared';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import L from 'leaflet';
+import { Place, City } from '../services/api';
+import 'leaflet/dist/leaflet.css';
+
+// Fix for Leaflet's default icon not showing in React builds
+import icon from 'leaflet/dist/images/marker-icon.png';
+import iconShadow from 'leaflet/dist/images/marker-shadow.png';
+
+let DefaultIcon = L.icon({
+  iconUrl: icon,
+  shadowUrl: iconShadow,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+L.Marker.prototype.options.icon = DefaultIcon;
 
 interface MapComponentProps {
-  pois: POI[];
+  places: Place[];
+  city: City;
 }
 
-const MAPBOX_TOKEN =
-  import.meta.env.VITE_MAPBOX_TOKEN || 'pk.eyJ1IjoiZXhhbXBsZSIsImEiOiJjbH...'; // Default placeholder
+const MapComponent = ({ places, city }: MapComponentProps) => {
+  // Determine center: prioritizing city coordinates if available
+  const centerLatitude = city.coordinates?.coordinates?.[1] || 51.505;
+  const centerLongitude = city.coordinates?.coordinates?.[0] || -0.09;
 
-const MapComponent: React.FC<MapComponentProps> = ({ pois }) => {
-  const [popupInfo, setPopupInfo] = React.useState<POI | null>(null);
-
-  const initialViewState = {
-    latitude: pois.length > 0 ? pois[0].coordinates.coordinates[1] : 40.7128,
-    longitude: pois.length > 0 ? pois[0].coordinates.coordinates[0] : -74.006,
-    zoom: 11,
-  };
+  // Filter places with valid coordinates
+  const placesWithCoords = places.filter(
+    (p) =>
+      p.latitude !== undefined &&
+      p.latitude !== null &&
+      p.longitude !== undefined &&
+      p.longitude !== null
+  );
 
   return (
     <div
+      className="map-container-wrapper"
       style={{
-        height: '400px',
+        height: '500px',
         width: '100%',
-        marginBottom: '20px',
-        borderRadius: '8px',
+        borderRadius: '12px',
         overflow: 'hidden',
+        zIndex: 0,
       }}
     >
-      <Map
-        initialViewState={initialViewState}
-        style={{ width: '100%', height: '100%' }}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
-        mapboxAccessToken={MAPBOX_TOKEN}
+      <MapContainer
+        center={[centerLatitude, centerLongitude]}
+        zoom={13}
+        scrollWheelZoom={false}
+        style={{ height: '100%', width: '100%' }}
       >
-        <NavigationControl position="top-right" />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-        {pois.map((poi) => (
-          <Marker
-            key={poi.id}
-            longitude={poi.coordinates.coordinates[0]}
-            latitude={poi.coordinates.coordinates[1]}
-            anchor="bottom"
-            onClick={(e: mapboxgl.MapLayerMouseEvent) => {
-              e.originalEvent.stopPropagation();
-              setPopupInfo(poi);
-            }}
-          >
-            <div style={{ fontSize: '24px', cursor: 'pointer' }}>📍</div>
+        {placesWithCoords.map((place) => (
+          <Marker key={place.id} position={[place.latitude!, place.longitude!]}>
+            <Popup>
+              <div className="map-popup-content">
+                <strong>{place.name}</strong>
+                <br />
+                <span className="category-badge">{place.category}</span>
+                <br />
+                {place.description?.substring(0, 50)}...
+                <br />
+                <a
+                  href={`#place-${place.id}`}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  View Details
+                </a>
+              </div>
+            </Popup>
           </Marker>
         ))}
-
-        {popupInfo && (
-          <Popup
-            anchor="top"
-            longitude={popupInfo.coordinates.coordinates[0]}
-            latitude={popupInfo.coordinates.coordinates[1]}
-            onClose={() => setPopupInfo(null)}
-          >
-            <div>
-              <strong>{popupInfo.name}</strong>
-              <p>{popupInfo.category}</p>
-            </div>
-          </Popup>
-        )}
-      </Map>
+      </MapContainer>
     </div>
   );
 };

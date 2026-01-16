@@ -1,9 +1,28 @@
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import { config } from 'dotenv';
-import * as entities from '../modules/playbooks/entities';
+
+// Playbook entities
+import { User } from '../modules/playbooks/entities/user.entity';
+import { City } from '../modules/playbooks/entities/city.entity';
+import { Playbook } from '../modules/playbooks/entities/playbook.entity';
+import { POI } from '../modules/playbooks/entities/poi.entity';
+import { PlaybookEdit } from '../modules/playbooks/entities/playbook-edit.entity';
+import { Vote } from '../modules/playbooks/entities/vote.entity';
+import { SavedListing } from '../modules/playbooks/entities/saved-listing.entity';
+
+// Places entities
+import { Place } from '../modules/places/entities/place.entity';
+import { Comment } from '../modules/places/entities/comment.entity';
+import { PlaceVote } from '../modules/places/entities/place-vote.entity';
+
+// Product entities
 import * as productEntities from '../modules/products/entities';
+
+// Crew match entities
 import * as crewMatchEntities from '../modules/crew-match/entities';
+
+// Audio walk entities
 import * as audioWalkEntities from '../modules/audio-walks/entities';
 
 config();
@@ -16,7 +35,19 @@ const getDataSourceOptions = (): DataSourceOptions => {
   const baseOptions = {
     type: 'postgres' as const,
     entities: [
-      ...Object.values(entities),
+      // Playbook entities (explicit)
+      User,
+      City,
+      Playbook,
+      POI,
+      PlaybookEdit,
+      Vote,
+      SavedListing,
+      // Places entities
+      Place,
+      Comment,
+      PlaceVote,
+      // Other module entities
       ...Object.values(productEntities),
       ...Object.values(crewMatchEntities),
       ...Object.values(audioWalkEntities),

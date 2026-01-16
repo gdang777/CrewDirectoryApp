@@ -42,18 +42,168 @@ export interface Playbook {
   updatedAt: string;
 }
 
+export type UserRole = 'user' | 'admin' | 'moderator';
+
 export interface User {
   id: string;
   email: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
+  role?: UserRole;
   airlineId?: string;
   verifiedBadge: boolean;
   karmaScore: number;
+  createdAt?: string;
+}
+
+export interface AdminStats {
+  totalUsers: number;
+  newUsersThisWeek: number;
+  totalListings: number;
+  pendingEdits: number;
+  usersByRole: {
+    users: number;
+    admins: number;
+    moderators: number;
+  };
+}
+
+export interface PaginatedResult<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface SavedListing {
+  id: string;
+  userId: string;
+  playbookId: string;
+  playbook?: Playbook & { city?: City };
+  createdAt: string;
+}
+
+export interface UserStats {
+  listingsCount: number;
+  savedCount: number;
+  karmaScore: number;
+}
+
+export interface UpdateProfileData {
+  firstName?: string;
+  lastName?: string;
+  airlineId?: string;
+}
+
+// Places
+export type PlaceCategory = 'eat' | 'drink' | 'shop' | 'visit';
+
+export interface Place {
+  id: string;
+  name: string;
+  description: string;
+  tips?: string;
+  category: PlaceCategory;
+  cityId: string;
+  city?: City;
+  imageUrl?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+  createdById?: string;
+  createdBy?: User;
+  rating: number;
+  ratingCount: number;
+  upvotes: number;
+  downvotes: number;
+  comments?: PlaceComment[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PlaceComment {
+  id: string;
+  text: string;
+  rating: number;
+  placeId: string;
+  userId: string;
+  user?: User;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreatePlaceData {
+  name: string;
+  description: string;
+  tips?: string;
+  category: PlaceCategory;
+  cityId: string;
+  imageUrl?: string;
+  address?: string;
+  latitude?: number;
+  longitude?: number;
+}
+
+export interface CreateCommentData {
+  text: string;
+  rating: number;
+}
+
+export interface VoteResult {
+  upvotes: number;
+  downvotes: number;
+  userVote: number;
+}
+
+// Products
+export interface Price {
+  id: string;
+  amount: number;
+  currency: string;
+  cityCode: string;
+  productId: string;
+  storeName?: string;
+  lastVerified?: string;
+}
+
+export interface Product {
+  id: string;
+  name: string;
+  description: string;
+  sku: string;
+  category: string;
+  metadata?: {
+    imageUrl?: string;
+    brand?: string;
+    [key: string]: any;
+  };
+  prices?: Price[];
+}
+
+export interface PriceComparison {
+  current: Price;
+  homeBase: Price;
+  deltaPercent: number;
 }
 
 export interface AuthResponse {
   access_token: string;
   user: User;
+}
+
+export interface SignupData {
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  airline?: string;
+}
+
+export interface LoginData {
+  email: string;
+  password: string;
 }
 
 class ApiService {
@@ -102,15 +252,51 @@ class ApiService {
   clearToken() {
     this.token = null;
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('user');
   }
 
-  async login(email: string): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>('/auth/dev-login', {
+  getToken(): string | null {
+    return this.token;
+  }
+
+  isAuthenticated(): boolean {
+    return !!this.token;
+  }
+
+  async signup(data: SignupData): Promise<AuthResponse> {
+    const response = await this.request<AuthResponse>('/auth/register', {
       method: 'POST',
-      body: JSON.stringify({ email }),
+      body: JSON.stringify(data),
     });
     this.setToken(response.access_token);
+    localStorage.setItem('user', JSON.stringify(response.user));
     return response;
+  }
+
+  async login(data: LoginData): Promise<AuthResponse> {
+    const response = await this.request<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    this.setToken(response.access_token);
+    localStorage.setItem('user', JSON.stringify(response.user));
+    return response;
+  }
+
+  logout() {
+    this.clearToken();
+  }
+
+  getStoredUser(): User | null {
+    const userJson = localStorage.getItem('user');
+    if (userJson) {
+      try {
+        return JSON.parse(userJson);
+      } catch {
+        return null;
+      }
+    }
+    return null;
   }
 
   // Cities
@@ -185,9 +371,206 @@ class ApiService {
     });
   }
 
+  // Places API
+  async getPlaces(options?: {
+    cityId?: string;
+    cityCode?: string;
+    category?: PlaceCategory;
+  }): Promise<Place[]> {
+    const params = new URLSearchParams();
+    if (options?.cityId) params.append('cityId', options.cityId);
+    if (options?.cityCode) params.append('cityCode', options.cityCode);
+    if (options?.category) params.append('category', options.category);
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.request<Place[]>(`/places${query}`);
+  }
+
+  async getPlace(id: string): Promise<Place> {
+    return this.request<Place>(`/places/${id}`);
+  }
+
+  async createPlace(data: CreatePlaceData): Promise<Place> {
+    return this.request<Place>('/places', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updatePlace(
+    id: string,
+    data: Partial<CreatePlaceData>
+  ): Promise<Place> {
+    return this.request<Place>(`/places/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deletePlace(id: string): Promise<void> {
+    await this.request(`/places/${id}`, { method: 'DELETE' });
+  }
+
+  // Place comments
+  async getPlaceComments(placeId: string): Promise<PlaceComment[]> {
+    return this.request<PlaceComment[]>(`/places/${placeId}/comments`);
+  }
+
+  async addPlaceComment(
+    placeId: string,
+    data: CreateCommentData
+  ): Promise<PlaceComment> {
+    return this.request<PlaceComment>(`/places/${placeId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deletePlaceComment(commentId: string): Promise<void> {
+    await this.request(`/places/comments/${commentId}`, { method: 'DELETE' });
+  }
+
+  // Place voting
+  async votePlace(placeId: string, value: 1 | -1): Promise<VoteResult> {
+    return this.request<VoteResult>(`/places/${placeId}/vote`, {
+      method: 'POST',
+      body: JSON.stringify({ value }),
+    });
+  }
+
+  async getPlaceVote(placeId: string): Promise<{ value: number }> {
+    return this.request<{ value: number }>(`/places/${placeId}/vote`);
+  }
+
+  // Products
+  async getProducts(category?: string): Promise<Product[]> {
+    const query = category ? `?category=${category}` : '';
+    return this.request<Product[]>(`/products${query}`);
+  }
+
+  async getProduct(id: string): Promise<Product> {
+    return this.request<Product>(`/products/${id}`);
+  }
+
+  async createProduct(data: {
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    currency: string;
+    cityCode: string;
+  }): Promise<Product> {
+    return this.request<Product>('/products', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async comparePrices(
+    productId: string,
+    cityCode: string,
+    homeBaseCode: string
+  ): Promise<PriceComparison> {
+    const params = new URLSearchParams({
+      productId,
+      cityCode,
+      homeBaseCode,
+    });
+    return this.request<PriceComparison>(
+      `/products/compare?${params.toString()}`
+    );
+  }
+
+  async getProductsWithPriceDelta(
+    cityCode: string,
+    homeBaseCode: string,
+    minDelta: number = 15
+  ): Promise<{ product: Product; comparison: PriceComparison }[]> {
+    const params = new URLSearchParams({
+      cityCode,
+      homeBaseCode,
+      minDelta: minDelta.toString(),
+    });
+    return this.request<{ product: Product; comparison: PriceComparison }[]>(
+      `/products/price-delta?${params.toString()}`
+    );
+  }
+
   // User profile
   async getProfile(): Promise<User> {
-    return this.request<User>('/auth/profile');
+    return this.request<User>('/users/profile');
+  }
+
+  async updateProfile(data: UpdateProfileData): Promise<User> {
+    return this.request<User>('/users/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async getUserStats(): Promise<UserStats> {
+    return this.request<UserStats>('/users/stats');
+  }
+
+  async getUserListings(): Promise<Playbook[]> {
+    return this.request<Playbook[]>('/users/listings');
+  }
+
+  // Saved listings
+  async getSavedListings(): Promise<SavedListing[]> {
+    return this.request<SavedListing[]>('/users/saved');
+  }
+
+  async saveListing(playbookId: string): Promise<SavedListing> {
+    return this.request<SavedListing>(`/users/saved/${playbookId}`, {
+      method: 'POST',
+    });
+  }
+
+  async unsaveListing(playbookId: string): Promise<void> {
+    await this.request(`/users/saved/${playbookId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  async checkIfSaved(playbookId: string): Promise<boolean> {
+    const result = await this.request<{ saved: boolean }>(
+      `/users/saved/${playbookId}/check`
+    );
+    return result.saved;
+  }
+
+  // Admin endpoints
+  async getAdminStats(): Promise<AdminStats> {
+    return this.request<AdminStats>('/admin/stats');
+  }
+
+  async getAdminUsers(
+    page: number = 1,
+    limit: number = 20
+  ): Promise<PaginatedResult<User>> {
+    return this.request<PaginatedResult<User>>(
+      `/admin/users?page=${page}&limit=${limit}`
+    );
+  }
+
+  async getRecentUsers(days: number = 7): Promise<User[]> {
+    return this.request<User[]>(`/admin/users/recent?days=${days}`);
+  }
+
+  async getAdminListings(
+    page: number = 1,
+    limit: number = 20
+  ): Promise<PaginatedResult<Playbook>> {
+    return this.request<PaginatedResult<Playbook>>(
+      `/admin/listings?page=${page}&limit=${limit}`
+    );
+  }
+
+  async updateUserRole(userId: string, role: UserRole): Promise<User> {
+    return this.request<User>(`/admin/users/${userId}/role`, {
+      method: 'PATCH',
+      body: JSON.stringify({ role }),
+    });
   }
 
   // Health check

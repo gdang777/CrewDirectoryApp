@@ -5,11 +5,18 @@ import { ConfigService } from '@nestjs/config';
 import { AuthService } from '../auth.service';
 import { User } from '../../playbooks/entities/user.entity';
 
+interface JwtPayload {
+  email: string;
+  sub: string;
+  airlineId?: string;
+  verifiedBadge: boolean;
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ConfigService,
-    private authService: AuthService,
+    private authService: AuthService
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -18,13 +25,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
-  async validate(payload: any): Promise<User> {
-    const user = await this.authService.verifyToken(
-      ExtractJwt.fromAuthHeaderAsBearerToken()({} as any),
-    );
+  async validate(payload: JwtPayload): Promise<User> {
+    // The payload has already been verified by passport-jwt
+    // We just need to fetch the user from the database
+    const user = await this.authService.getUserById(payload.sub);
 
     if (!user) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('User not found');
     }
 
     return user;

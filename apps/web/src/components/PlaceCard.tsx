@@ -1,10 +1,11 @@
 import { Link } from 'react-router-dom';
-import { Place } from '../data/mockData';
+import { Place } from '../services/api';
+import StarRating from './StarRating';
 import './PlaceCard.css';
 
 interface PlaceCardProps {
   place: Place;
-  onVote: (placeId: string, value: 1 | -1) => void;
+  onVote?: (placeId: string, value: 1 | -1) => void;
 }
 
 const categoryIcons: Record<string, string> = {
@@ -16,18 +17,25 @@ const categoryIcons: Record<string, string> = {
 
 const PlaceCard = ({ place, onVote }: PlaceCardProps) => {
   const score = place.upvotes - place.downvotes;
+  const rating = Number(place.rating) || 0;
 
   return (
     <Link to={`/place/${place.id}`} className="place-card-link">
       <div className="place-card">
         <div
           className="place-image"
-          style={{ backgroundImage: `url(${place.imageUrl})` }}
+          style={{
+            backgroundImage: place.imageUrl
+              ? `url(${place.imageUrl})`
+              : 'linear-gradient(135deg, #1a1a2e, #16213e)',
+          }}
         >
           <span className="category-badge">
             {categoryIcons[place.category]} {place.category}
           </span>
-          <div className="rating-badge">⭐ {place.rating.toFixed(1)}</div>
+          <div className="rating-badge">
+            <StarRating rating={rating} size="sm" />
+          </div>
         </div>
 
         <div className="place-content">
@@ -41,32 +49,45 @@ const PlaceCard = ({ place, onVote }: PlaceCardProps) => {
           )}
 
           <div className="place-footer">
-            <span className="added-by">Added by {place.addedBy}</span>
-            <div className="vote-buttons" onClick={(e) => e.preventDefault()}>
-              <button
-                className="vote-btn upvote"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onVote(place.id, 1);
-                }}
-              >
-                ▲
-              </button>
+            <span className="added-by">
+              {place.createdBy
+                ? `Added by ${place.createdBy.name}`
+                : 'Crew recommendation'}
+            </span>
+            {onVote && (
+              <div className="vote-buttons" onClick={(e) => e.preventDefault()}>
+                <button
+                  className="vote-btn upvote"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onVote(place.id, 1);
+                  }}
+                >
+                  ▲
+                </button>
+                <span
+                  className={`vote-score ${score > 0 ? 'positive' : score < 0 ? 'negative' : ''}`}
+                >
+                  {score}
+                </span>
+                <button
+                  className="vote-btn downvote"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onVote(place.id, -1);
+                  }}
+                >
+                  ▼
+                </button>
+              </div>
+            )}
+            {!onVote && (
               <span
                 className={`vote-score ${score > 0 ? 'positive' : score < 0 ? 'negative' : ''}`}
               >
-                {score}
+                👍 {score}
               </span>
-              <button
-                className="vote-btn downvote"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onVote(place.id, -1);
-                }}
-              >
-                ▼
-              </button>
-            </div>
+            )}
           </div>
         </div>
       </div>

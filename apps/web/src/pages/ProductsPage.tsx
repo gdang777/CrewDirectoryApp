@@ -1,33 +1,52 @@
 import { useState, useEffect } from 'react';
-import type { Product } from '@crewdirectoryapp/shared';
-import { apiService } from '../services/api';
-import LoadingSpinner from '../components/LoadingSpinner';
-import ErrorMessage from '../components/ErrorMessage';
-import RecommendationEditor from '../components/RecommendationEditor';
+import { apiService, Product, PriceComparison } from '../services/api';
+import { useCities } from '../hooks/useCities';
+import ProductCard from '../components/ProductCard';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showEditor, setShowEditor] = useState(false);
+  const { cities, loading: citiesLoading } = useCities();
 
-  const categories = ['all', 'chocolate', 'cosmetics', 'spirits', 'other'];
+  const [currentCity, setCurrentCity] = useState<string>('');
+  const [homeBase, setHomeBase] = useState<string>('LHR'); // Default to London
+
+  const [products, setProducts] = useState<
+    { product: Product; comparison?: PriceComparison }[]
+  >([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    // Set default current city if cities loaded and none selected
+    if (cities.length > 0 && !currentCity) {
+      setCurrentCity(cities[0].code);
+    }
+  }, [cities]);
 
   useEffect(() => {
     loadProducts();
-  }, [selectedCategory]);
+  }, [currentCity, homeBase]);
 
   const loadProducts = async () => {
+    if (!currentCity || !homeBase) return;
+
     try {
       setLoading(true);
       setError(null);
-      const category =
-        selectedCategory === 'all' ? undefined : selectedCategory;
-      const data = await apiService.getProducts(category);
-      setProducts(data);
+
+      // If same city, just fetch all products without comparison
+      if (currentCity === homeBase) {
+        const data = await apiService.getProducts();
+        setProducts(data.map((p) => ({ product: p })));
+      } else {
+        const data = await apiService.getProductsWithPriceDelta(
+          currentCity,
+          homeBase
+        );
+        setProducts(data);
+      }
     } catch (err) {
+      console.error('Failed to load products:', err);
       setError(
         err instanceof Error ? err.message : 'Failed to load recommendations'
       );
@@ -36,66 +55,87 @@ const ProductsPage = () => {
     }
   };
 
-  if (loading) {
-    return <LoadingSpinner />;
-  }
+  const handleCityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCurrentCity(e.target.value);
+  };
 
-  if (error) {
-    return <ErrorMessage message={error} onRetry={loadProducts} />;
+  const handleHomeBaseChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setHomeBase(e.target.value);
+  };
+
+  if (citiesLoading) {
+    return (
+      <div className="products-page loading">
+        <div className="loading-spinner">Loading cities...</div>
+      </div>
+    );
   }
 
   return (
     <div className="products-page">
-      <div className="header-section">
-        <h1>Layover Recommendations</h1>
-        <button onClick={() => setShowEditor(true)} className="create-button">
-          + Add Recommendation
-        </button>
-      </div>
+      <div className="products-header">
+        <h1>Shopping Guide</h1>
+        <p className="subtitle">
+          Find the best deals on your layover compared to home.
+        </p>
 
-      <div className="filters-section">
-        <div className="filter-group">
-          <label htmlFor="category-select">Filter by Category:</label>
-          <select
-            id="category-select"
-            value={selectedCategory}
-            onChange={(e) => setSelectedCategory(e.target.value)}
-          >
-            {categories.map((cat) => (
-              <option key={cat} value={cat}>
-                {cat.charAt(0).toUpperCase() + cat.slice(1)}
-              </option>
-            ))}
-          </select>
+        <div className="comparison-controls">
+          <div className="control-group">
+            <label htmlFor="current-city">I am in:</label>
+            <select
+              id="current-city"
+              value={currentCity}
+              onChange={handleCityChange}
+              className="city-select"
+            >
+              {cities.map((city) => (
+                <option key={city.code} value={city.code}>
+                  {city.name} ({city.code})
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="swap-icon">⇄</div>
+
+          <div className="control-group">
+            <label htmlFor="home-base">My Home Base:</label>
+            <select
+              id="home-base"
+              value={homeBase}
+              onChange={handleHomeBaseChange}
+              className="city-select"
+            >
+              {cities.map((city) => (
+                <option key={city.code} value={city.code}>
+                  {city.name} ({city.code})
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      {showEditor && (
-        <RecommendationEditor
-          onClose={() => setShowEditor(false)}
-          onSave={loadProducts}
-        />
-      )}
-
-      <div className="products-grid">
-        {products.length === 0 ? (
-          <div className="no-results">
-            No recommendations found. Be the first to add one!
+      <div className="products-content">
+        {loading ? (
+          <div className="loading-spinner">Finding best deals...</div>
+        ) : error ? (
+          <div className="error-message">{error}</div>
+        ) : products.length === 0 ? (
+          <div className="empty-state">
+            <h3>No deals found</h3>
+            <p>Try comparing different cities or check back later.</p>
           </div>
         ) : (
-          products.map((product) => (
-            <div key={product.id} className="product-card">
-              <h3>{product.name}</h3>
-              <p className="category-badge">{product.category}</p>
-              <p className="description">
-                {product.description || 'No description provided.'}
-              </p>
-
-              <div className="recommendation-footer">
-                <span className="recommended-by">Recommended by Crew</span>
-              </div>
-            </div>
-          ))
+          <div className="products-grid">
+            {products.map(({ product, comparison }) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                comparison={comparison}
+              />
+            ))}
+          </div>
         )}
       </div>
     </div>

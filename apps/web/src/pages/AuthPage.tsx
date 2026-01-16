@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import './AuthPage.css';
 
 const airlines = [
@@ -21,6 +22,8 @@ const airlines = [
 ];
 
 const AuthPage = () => {
+  const navigate = useNavigate();
+  const { login, signup } = useAuth();
   const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
   const [loginData, setLoginData] = useState({
     email: '',
@@ -32,24 +35,58 @@ const AuthPage = () => {
     email: '',
     password: '',
     airline: '',
-    airlineEmail: '',
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: Integrate with backend auth
-    console.log('Login:', loginData);
-    setTimeout(() => setLoading(false), 1000);
+    setError(null);
+
+    try {
+      await login({
+        email: loginData.email,
+        password: loginData.password,
+      });
+      setSuccess('Login successful! Redirecting...');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Login failed. Please try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // TODO: Integrate with backend auth
-    console.log('Signup:', signupData);
-    setTimeout(() => setLoading(false), 1000);
+    setError(null);
+
+    try {
+      await signup({
+        email: signupData.email,
+        password: signupData.password,
+        firstName: signupData.firstName,
+        lastName: signupData.lastName,
+        airline: signupData.airline || undefined,
+      });
+      setSuccess('Account created! Redirecting...');
+      setTimeout(() => {
+        navigate('/');
+      }, 1000);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : 'Signup failed. Please try again.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -80,17 +117,31 @@ const AuthPage = () => {
             Sign in to your account or create a new one
           </p>
 
+          {/* Error/Success Messages */}
+          {error && <div className="auth-message auth-error">{error}</div>}
+          {success && (
+            <div className="auth-message auth-success">{success}</div>
+          )}
+
           {/* Tabs */}
           <div className="auth-tabs">
             <button
               className={`tab ${activeTab === 'login' ? 'active' : ''}`}
-              onClick={() => setActiveTab('login')}
+              onClick={() => {
+                setActiveTab('login');
+                setError(null);
+                setSuccess(null);
+              }}
             >
               Login
             </button>
             <button
               className={`tab ${activeTab === 'signup' ? 'active' : ''}`}
-              onClick={() => setActiveTab('signup')}
+              onClick={() => {
+                setActiveTab('signup');
+                setError(null);
+                setSuccess(null);
+              }}
             >
               Sign Up
             </button>
@@ -204,7 +255,9 @@ const AuthPage = () => {
                     }))
                   }
                   required
+                  minLength={6}
                 />
+                <small className="form-hint">Minimum 6 characters</small>
               </div>
 
               <div className="form-group">
@@ -225,21 +278,6 @@ const AuthPage = () => {
                     </option>
                   ))}
                 </select>
-              </div>
-
-              <div className="form-group">
-                <label>Airline Email (optional)</label>
-                <input
-                  type="email"
-                  placeholder="your.name@airline.com"
-                  value={signupData.airlineEmail}
-                  onChange={(e) =>
-                    setSignupData((prev) => ({
-                      ...prev,
-                      airlineEmail: e.target.value,
-                    }))
-                  }
-                />
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading}>

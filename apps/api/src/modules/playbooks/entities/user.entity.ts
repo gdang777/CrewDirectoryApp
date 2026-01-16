@@ -9,6 +9,12 @@ import {
 import { PlaybookEdit } from './playbook-edit.entity';
 import { Vote } from './vote.entity';
 
+export enum UserRole {
+  USER = 'user',
+  ADMIN = 'admin',
+  MODERATOR = 'moderator',
+}
+
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
@@ -21,7 +27,23 @@ export class User {
   name: string;
 
   @Column({ nullable: true })
+  firstName: string;
+
+  @Column({ nullable: true })
+  lastName: string;
+
+  @Column({ nullable: true })
+  password: string;
+
+  @Column({ nullable: true })
   airlineId: string;
+
+  @Column({
+    type: 'enum',
+    enum: UserRole,
+    default: UserRole.USER,
+  })
+  role: UserRole;
 
   @Column({ default: false })
   verifiedBadge: boolean;

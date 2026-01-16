@@ -1,7 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Product, Price, PriceHistory, AffiliateLink, QRScan } from './entities';
+import {
+  Product,
+  Price,
+  PriceHistory,
+  AffiliateLink,
+  QRScan,
+} from './entities';
 
 @Injectable()
 export class ProductsService {
@@ -15,7 +21,7 @@ export class ProductsService {
     @InjectRepository(AffiliateLink)
     private affiliateLinkRepository: Repository<AffiliateLink>,
     @InjectRepository(QRScan)
-    private qrScanRepository: Repository<QRScan>,
+    private qrScanRepository: Repository<QRScan>
   ) {}
 
   async findAll(category?: string): Promise<Product[]> {
@@ -46,7 +52,7 @@ export class ProductsService {
   async comparePrices(
     productId: string,
     cityCode: string,
-    homeBaseCode: string,
+    homeBaseCode: string
   ): Promise<{ current: Price; homeBase: Price; deltaPercent: number }> {
     const currentPrice = await this.priceRepository.findOne({
       where: { productId, cityCode },
@@ -76,7 +82,7 @@ export class ProductsService {
   async createAffiliateLink(
     productId: string,
     url: string,
-    commissionPercent: number = 5,
+    commissionPercent: number = 5
   ): Promise<AffiliateLink> {
     const product = await this.productRepository.findOne({
       where: { id: productId },
@@ -95,7 +101,11 @@ export class ProductsService {
     return this.affiliateLinkRepository.save(link);
   }
 
-  async scanQR(qrCode: string, userId: string, cityCode: string): Promise<QRScan> {
+  async scanQR(
+    qrCode: string,
+    userId: string,
+    cityCode: string
+  ): Promise<QRScan> {
     const scan = this.qrScanRepository.create({
       qrCode,
       userId,
@@ -109,8 +119,8 @@ export class ProductsService {
   async getProductsWithPriceDelta(
     cityCode: string,
     homeBaseCode: string,
-    minDeltaPercent: number = 15,
-  ): Promise<Product[]> {
+    minDeltaPercent: number = 15
+  ): Promise<{ product: Product; comparison: any }[]> {
     // This would typically be done with a more complex query
     // For now, simplified implementation
     const products = await this.findAll();
@@ -121,10 +131,10 @@ export class ProductsService {
         const comparison = await this.comparePrices(
           product.id,
           cityCode,
-          homeBaseCode,
+          homeBaseCode
         );
         if (Math.abs(comparison.deltaPercent) >= minDeltaPercent) {
-          productsWithDelta.push(product);
+          productsWithDelta.push({ product, comparison });
         }
       } catch (error) {
         // Skip products without price data
@@ -132,5 +142,41 @@ export class ProductsService {
     }
 
     return productsWithDelta;
+  }
+
+  async createProduct(data: {
+    name: string;
+    description: string;
+    category: string;
+    price: number;
+    currency: string;
+    cityCode: string;
+  }): Promise<Product> {
+    // Check if product exists by name (simplified check)
+    let product = await this.productRepository.findOne({
+      where: { name: data.name },
+    });
+
+    if (!product) {
+      product = this.productRepository.create({
+        name: data.name,
+        description: data.description,
+        category: data.category,
+        sku: data.name.toUpperCase().replace(/\s+/g, '-').slice(0, 20), // Simple SKU generation
+        metadata: {},
+      });
+      await this.productRepository.save(product);
+    }
+
+    // Add price entry
+    const price = this.priceRepository.create({
+      product,
+      amount: data.price,
+      currency: data.currency,
+      cityCode: data.cityCode,
+    });
+    await this.priceRepository.save(price);
+
+    return this.findOne(product.id);
   }
 }
