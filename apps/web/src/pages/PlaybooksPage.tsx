@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import type { Playbook, City } from '@crewdirectoryapp/shared';
-import { apiService } from '../services/api';
+import { apiService, Playbook, City } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
 import ErrorMessage from '../components/ErrorMessage';
-import MapComponent from '../components/MapComponent';
+// import MapComponent from '../components/MapComponent';
 import PlaybookEditor from '../components/PlaybookEditor';
 import './PlaybooksPage.css';
 
@@ -84,9 +83,12 @@ const PlaybooksPage = () => {
         />
       )}
 
+      {/* MapComponent requires Place[] and City, but we have Playbook[]. 
+          TODO: Adapt MapComponent to support POIs or transform data.
       {playbooks.length > 0 && (
         <MapComponent pois={playbooks.flatMap((p) => p.pois || [])} />
-      )}
+      )} 
+      */}
 
       <div className="playbooks-grid">
         {playbooks.length === 0 ? (

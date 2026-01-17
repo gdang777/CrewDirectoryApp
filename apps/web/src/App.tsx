@@ -18,9 +18,9 @@ import './App.css';
 
 function App() {
   return (
-    <AuthProvider>
-      <ChatProvider>
-        <Router>
+    <Router>
+      <AuthProvider>
+        <ChatProvider>
           <Routes>
             {/* Public routes */}
             <Route path="/" element={<HomePage />} />
@@ -67,10 +67,10 @@ function App() {
               }
             />
           </Routes>
-        </Router>
-        <ChatWindow />
-      </ChatProvider>
-    </AuthProvider>
+          <ChatWindow />
+        </ChatProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

@@ -306,6 +306,15 @@ _No features currently in progress_
 - Updated `CityPage` to include map view
 - Updated navigation to include Chat and Shopping
 
+### 2026-01-16 - Bug Fixes & Stability
+
+**Fixed:**
+
+- **Critical Router Crash**: Restructured `App.tsx` ensuring `ChatWindow` has access to `Router` context.
+- **White Screen of Death**: Added `ErrorBoundary` to catch runtime errors.
+- **Build System**: Fixed TypeScript validation errors and CSS syntax issues.
+- **Server Ports**: Resolved port conflicts for backend (3001) and frontend (5173).
+
 ---
 
 ## ❌ Failed Attempts & Troubleshooting Log

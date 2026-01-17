@@ -28,35 +28,6 @@ const PlaceDetailsPage = () => {
 
   // ... (inside component)
 
-  {
-    place.createdBy && (
-      <div className="stat">
-        <span className="stat-value">✈️</span>
-        <div className="author-info">
-          <span className="stat-label">{place.createdBy.name}</span>
-          {isAuthenticated && user?.id !== place.createdBy.id && (
-            <button
-              className="contact-host-btn"
-              onClick={() => joinDMRoom(place.createdBy.id)}
-              style={{
-                marginLeft: '0.5rem',
-                padding: '2px 8px',
-                fontSize: '0.8em',
-                borderRadius: '12px',
-                border: 'none',
-                background: '#7928CA',
-                color: 'white',
-                cursor: 'pointer',
-              }}
-            >
-              Contact
-            </button>
-          )}
-        </div>
-      </div>
-    );
-  }
-
   const [place, setPlace] = useState<Place | null>(null);
   const [comments, setComments] = useState<PlaceComment[]>([]);
   const [loading, setLoading] = useState(true);
@@ -285,7 +256,9 @@ const PlaceDetailsPage = () => {
                     {isAuthenticated && user?.id !== place.createdBy.id && (
                       <button
                         className="contact-host-btn"
-                        onClick={() => joinDMRoom(place.createdBy.id)}
+                        onClick={() =>
+                          place.createdBy && joinDMRoom(place.createdBy.id)
+                        }
                         style={{
                           marginTop: '4px',
                           padding: '2px 8px',

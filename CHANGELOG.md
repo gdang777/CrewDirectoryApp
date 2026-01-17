@@ -140,6 +140,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Expo Router setup with Tab-based navigation.
   - Scaffold screens for Playbooks, Shop, Crew, and Profile.
 
+### Fixed
+
+- **App Stability**:
+  - Fixed "useLocation" route context crash by restructuring `App.tsx` Router provider order.
+  - Added `ErrorBoundary` component to catch and display runtime errors gracefully.
+- **Build & Style**:
+  - Resolved CSS syntax error in `Dashboard.css` (nested media query).
+  - Fixed multiple TypeScript type errors in `AddTipModal`, `ChatPage`, and `PlaybookEditor`.
+  - Cleaned up unused imports across the codebase.
+
 ---
 
 ## [0.1.0] - 2025-01-XX

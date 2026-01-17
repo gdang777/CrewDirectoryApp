@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import type { City } from '@crewdirectoryapp/shared';
-import { apiService } from '../services/api';
+// import type { City } from '@crewdirectoryapp/shared';
+import { apiService, City } from '../services/api';
 
 interface PlaybookEditorProps {
   cities: City[];
@@ -31,7 +31,7 @@ const PlaybookEditor: React.FC<PlaybookEditorProps> = ({
       await apiService.createPlaybook({
         ...formData,
         // Mock POIs for MVP creation flow, typically would be a separate step or list
-        pois: [],
+        // pois: [],
       });
       onSave();
       onClose();

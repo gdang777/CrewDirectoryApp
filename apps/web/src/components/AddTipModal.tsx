@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { apiService, PlaceCategory } from '../services/api';
+import { apiService } from '../services/api';
 import './AddTipModal.css';
 
 interface AddTipModalProps {
@@ -26,7 +26,7 @@ const AddTipModal = ({
 }: AddTipModalProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [step, setStep] = useState(1); // 1: Product, 2: Price
+  // const [step, setStep] = useState(1); // 1: Product, 2: Price
 
   const [formData, setFormData] = useState({
     name: '',

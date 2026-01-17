@@ -386,17 +386,19 @@
     .data-table {
         display: block;
         overflow-x: auto;
+    }
 
-        /* Airline Badge - Profile */
-        .badge.airline {
-            background: rgba(0, 198, 255, 0.15);
-            color: #00c6ff;
-            border: 1px solid rgba(0, 198, 255, 0.3);
-        }
+    /* Airline Badge - Profile */
+    .badge.airline {
+        background: rgba(0, 198, 255, 0.15);
+        color: #00c6ff;
+        border: 1px solid rgba(0, 198, 255, 0.3);
+    }
 
-        .user-airline-tag {
-            color: #00c6ff;
-            font-weight: 500;
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
+    .user-airline-tag {
+        color: #00c6ff;
+        font-weight: 500;
+        font-size: 0.9em;
+        opacity: 0.8;
+    }
+}
