@@ -51,7 +51,7 @@ const PlaceCard = ({ place, onVote }: PlaceCardProps) => {
           <div className="place-footer">
             <span className="added-by">
               {place.createdBy
-                ? `Added by ${place.createdBy.name}`
+                ? `Added by ${place.createdBy.name}${place.createdBy.airlineId && place.createdBy.airlineId !== 'OT' ? ` [${place.createdBy.airlineId}]` : ''}`
                 : 'Crew recommendation'}
             </span>
             {onVote && (

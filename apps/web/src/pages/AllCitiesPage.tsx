@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useCities } from '../hooks/useCities';
 import AddCityModal from '../components/AddCityModal';
+import Navbar from '../components/Navbar';
 import apiService from '../services/api';
 import './AllCitiesPage.css';
 
@@ -36,21 +37,8 @@ const AllCitiesPage = () => {
   return (
     <div className="all-cities-page">
       {/* Navigation */}
-      <nav className="cities-nav">
-        <div className="nav-container">
-          <Link to="/" className="nav-logo">
-            ✈️ Crew Lounge
-          </Link>
-          <div className="nav-links">
-            <Link to="/">🏠 Home</Link>
-            <Link to="/properties">🏠 Properties</Link>
-            <a href="#">💼 Gigs</a>
-          </div>
-          <Link to="/auth" className="nav-cta">
-            Sign In
-          </Link>
-        </div>
-      </nav>
+      {/* Navigation */}
+      <Navbar />
 
       {/* Header */}
       <header className="cities-header">

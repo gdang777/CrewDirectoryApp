@@ -4,20 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import apiService from '../services/api';
 import './Dashboard.css';
 
-const airlines = [
-  'Air Canada',
-  'WestJet',
-  'Porter Airlines',
-  'American Airlines',
-  'Delta Air Lines',
-  'United Airlines',
-  'Southwest Airlines',
-  'JetBlue Airways',
-  'Alaska Airlines',
-  'Spirit Airlines',
-  'Frontier Airlines',
-  'Other',
-];
+import { airlines } from '../data/airlines';
 
 const ProfilePage = () => {
   const { user, updateUser, logout } = useAuth();
@@ -92,6 +79,11 @@ const ProfilePage = () => {
                 {user?.role && (
                   <span className="profile-meta-item">
                     <span className={`badge ${user.role}`}>{user.role}</span>
+                  </span>
+                )}
+                {user?.airlineId && (
+                  <span className="profile-meta-item">
+                    <span className="badge airline">{user.airlineId}</span>
                   </span>
                 )}
                 <span className="profile-meta-item">
@@ -228,11 +220,11 @@ const ProfilePage = () => {
                 <option value="">Select your airline</option>
                 {airlines.map((airline) => (
                   <option
-                    key={airline}
-                    value={airline}
+                    key={airline.code}
+                    value={airline.code}
                     style={{ background: '#1a1a2e' }}
                   >
-                    {airline}
+                    {airline.name} ({airline.code})
                   </option>
                 ))}
               </select>

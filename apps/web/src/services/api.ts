@@ -577,7 +577,53 @@ class ApiService {
   async healthCheck(): Promise<{ status: string }> {
     return this.request<{ status: string }>('/');
   }
+  // Chat Rooms
+  async getCityRooms(cityCode: string): Promise<ChatRoom[]> {
+    return this.request<ChatRoom[]>(`/chat/rooms/${cityCode}`);
+  }
+
+  async getRoom(roomId: string): Promise<ChatRoom> {
+    return this.request<ChatRoom>(`/chat/room/${roomId}`);
+  }
+
+  async createCityRoom(cityCode: string, name: string): Promise<ChatRoom> {
+    return this.request<ChatRoom>('/chat/rooms', {
+      method: 'POST',
+      body: JSON.stringify({ cityCode, name }),
+    });
+  }
 }
 
 export const apiService = new ApiService();
 export default apiService;
+
+// Chat
+export type ChatRoomType = 'CITY_GROUP' | 'DM' | 'CUSTOM_GROUP';
+
+export interface ChatParticipant {
+  id: string;
+  userId: string;
+  user: User;
+  roomId: string;
+  joinedAt: string;
+}
+
+export interface ChatMessage {
+  id: string;
+  content: string;
+  senderId: string;
+  sender?: User;
+  roomId: string;
+  createdAt: string;
+}
+
+export interface ChatRoom {
+  id: string;
+  name?: string;
+  type: ChatRoomType;
+  metadata?: Record<string, any>;
+  participants?: ChatParticipant[];
+  lastMessageAt?: string;
+  createdAt: string;
+  updatedAt: string;
+}

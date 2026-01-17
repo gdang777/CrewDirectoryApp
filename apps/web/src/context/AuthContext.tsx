@@ -22,6 +22,7 @@ interface AuthContextType {
   signup: (data: SignupData) => Promise<AuthResponse>;
   logout: () => void;
   updateUser: (user: User) => void;
+  token: string | null;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -73,6 +74,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({
     signup,
     logout,
     updateUser,
+    token: apiService.getToken(),
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

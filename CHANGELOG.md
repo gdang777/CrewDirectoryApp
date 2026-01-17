@@ -128,7 +128,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Web Frontend
 
 - **Module A (Playbooks)**:
-  - `MapComponent` integration using Mapbox.
+  - `MapComponent` integration using Leaflet.
   - `PlaybookEditor` for creating and editing playbooks.
   - Voting UI with optimistic updates.
 - **Module C (Crew Match)**:

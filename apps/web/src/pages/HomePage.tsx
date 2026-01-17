@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import Navbar from '../components/Navbar';
 import { mockCities, mockPlaces } from '../data/mockData';
 import './HomePage.css';
 
@@ -21,20 +22,8 @@ const HomePage = () => {
   return (
     <div className="home-page">
       {/* Navigation */}
-      <nav className="main-nav">
-        <div className="nav-container">
-          <div className="nav-logo">✈️ Crew Lounge</div>
-          <div className="nav-links">
-            <a href="#cities">🏠 Home</a>
-            <a href="#cities">✈️ Layovers</a>
-            <Link to="/properties">🏠 Properties</Link>
-            <a href="#about">💼 Gigs</a>
-          </div>
-          <Link to="/auth" className="nav-cta">
-            Sign In
-          </Link>
-        </div>
-      </nav>
+      {/* Navigation */}
+      <Navbar transparent />
 
       {/* Hero Section */}
       <header className="hero-section">

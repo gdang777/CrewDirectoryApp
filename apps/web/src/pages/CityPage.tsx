@@ -6,10 +6,13 @@ import PlaceCard from '../components/PlaceCard';
 import AddPlaceModal from '../components/AddPlaceModal';
 import ShoppingSection from '../components/ShoppingSection';
 import MapComponent from '../components/MapComponent';
+import CityChatList from '../components/CityChatList';
+import Navbar from '../components/Navbar';
+
 import './CityPage.css';
 
 const categories: {
-  key: PlaceCategory | 'guide';
+  key: PlaceCategory | 'guide' | 'chat';
   label: string;
   icon: string;
 }[] = [
@@ -18,6 +21,7 @@ const categories: {
   { key: 'shop', label: 'Shop', icon: '🛍️' },
   { key: 'visit', label: 'Visit', icon: '📍' },
   { key: 'guide', label: 'Best Buys', icon: '💎' },
+  { key: 'chat', label: 'Chats', icon: '💬' },
 ];
 
 // City images mapping
@@ -37,9 +41,9 @@ const CityPage = () => {
   const [city, setCity] = useState<City | null>(null);
   const [places, setPlaces] = useState<Place[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeCategory, setActiveCategory] = useState<PlaceCategory | 'guide'>(
-    'eat'
-  );
+  const [activeCategory, setActiveCategory] = useState<
+    PlaceCategory | 'guide' | 'chat'
+  >('eat');
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
@@ -123,6 +127,7 @@ const CityPage = () => {
 
   return (
     <div className="city-page">
+      <Navbar />
       <header
         className="city-header"
         style={{ backgroundImage: `url(${cityImage})` }}
@@ -189,6 +194,8 @@ const CityPage = () => {
 
         {activeCategory === 'guide' ? (
           <ShoppingSection cityCode={city.code} />
+        ) : activeCategory === 'chat' ? (
+          <CityChatList cityCode={city.code} />
         ) : viewMode === 'map' ? (
           <MapComponent places={filteredPlaces} city={city} />
         ) : filteredPlaces.length === 0 ? (

@@ -10,6 +10,10 @@
 - [x] Mobile app structure
 - [x] GitHub repository connected
 - [x] Dependencies installed
+- [x] Module A (Playbooks) - Map integration (Leaflet), Voting UI, Editor
+- [x] Module B (Products) - Catalog, Price Comparison, Best Buys
+- [x] Module C (Crew Match) - WebSocket Server, Chat Interface
+- [x] Database Seeding & Migrations
 
 ## 🚀 Immediate Next Steps
 
@@ -69,36 +73,20 @@ Visit http://localhost:5173
 
 ### High Priority
 
-1. **Module A Enhancements**
-   - Add Mapbox integration for POI visualization
-   - Complete playbook editor UI
-   - Add voting UI
-
-2. **Module B Web UI**
-   - Product catalog page (Browse & Filter)
-   - Price comparison view
-   - "Best Buys" recommendations
-
-3. **Database Migrations**
-   - Set up TypeORM migrations
-   - Seed initial data (cities, sample products)
-
-### Medium Priority
-
-4. **Module C Real-time Features**
-   - WebSocket server setup
-   - Redis pub/sub for crew matching
-   - Real-time availability updates
-
-5. **Module C Web UI**
-   - Pairing upload interface
+1. **Module C Web UI Enhancements**
+   - Pairing upload interface (.ics/.pdf parsing)
    - Availability calendar
-   - Group chat interface
+   - Crew roster matching algorithm
 
-6. **Module D Features**
+2. **Module D Features (Audio Walks)**
    - File upload for audio walks
    - GPS tracking integration
    - Audio player component
+   - Purchase flow
+
+3. **Mobile App Development**
+   - Implement parity with Web UI
+   - Offline mode for playbooks
 
 ### Lower Priority
 

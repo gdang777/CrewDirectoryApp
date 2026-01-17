@@ -8,6 +8,7 @@ import { getDatabaseConfig } from './config/database.config';
 import { PlaybooksModule } from './modules/playbooks/playbooks.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProductsModule } from './modules/products/products.module';
+import { ChatModule } from './modules/chat/chat.module';
 import { CrewMatchModule } from './modules/crew-match/crew-match.module';
 import { AudioWalksModule } from './modules/audio-walks/audio-walks.module';
 import { AdminModule } from './modules/admin/admin.module';
@@ -34,6 +35,7 @@ import { PlacesModule } from './modules/places/places.module';
     AdminModule,
     UsersModule,
     PlacesModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService],

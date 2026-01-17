@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useChat } from '../context/ChatContext';
 import apiService, { Place, PlaceComment } from '../services/api';
 import StarRating from '../components/StarRating';
 import './PlaceDetailsPage.css';
@@ -22,7 +23,39 @@ const categoryColors: Record<string, string> = {
 const PlaceDetailsPage = () => {
   const { placeId } = useParams<{ placeId: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+  const { joinDMRoom } = useChat();
+
+  // ... (inside component)
+
+  {
+    place.createdBy && (
+      <div className="stat">
+        <span className="stat-value">✈️</span>
+        <div className="author-info">
+          <span className="stat-label">{place.createdBy.name}</span>
+          {isAuthenticated && user?.id !== place.createdBy.id && (
+            <button
+              className="contact-host-btn"
+              onClick={() => joinDMRoom(place.createdBy.id)}
+              style={{
+                marginLeft: '0.5rem',
+                padding: '2px 8px',
+                fontSize: '0.8em',
+                borderRadius: '12px',
+                border: 'none',
+                background: '#7928CA',
+                color: 'white',
+                cursor: 'pointer',
+              }}
+            >
+              Contact
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const [place, setPlace] = useState<Place | null>(null);
   const [comments, setComments] = useState<PlaceComment[]>([]);
@@ -244,7 +277,31 @@ const PlaceDetailsPage = () => {
               {place.createdBy && (
                 <div className="stat">
                   <span className="stat-value">✈️</span>
-                  <span className="stat-label">{place.createdBy.name}</span>
+                  <div
+                    className="author-info"
+                    style={{ display: 'flex', flexDirection: 'column' }}
+                  >
+                    <span className="stat-label">{place.createdBy.name}</span>
+                    {isAuthenticated && user?.id !== place.createdBy.id && (
+                      <button
+                        className="contact-host-btn"
+                        onClick={() => joinDMRoom(place.createdBy.id)}
+                        style={{
+                          marginTop: '4px',
+                          padding: '2px 8px',
+                          fontSize: '0.7em',
+                          borderRadius: '12px',
+                          border: 'none',
+                          background: '#7928CA',
+                          color: 'white',
+                          cursor: 'pointer',
+                          width: 'fit-content',
+                        }}
+                      >
+                        Contact
+                      </button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -320,6 +377,13 @@ const PlaceDetailsPage = () => {
                       <div className="user-info">
                         <span className="user-name">
                           {comment.user?.name || 'Anonymous'}
+                          {comment.user?.airlineId &&
+                            comment.user.airlineId !== 'OT' && (
+                              <span className="user-airline-tag">
+                                {' '}
+                                [{comment.user.airlineId}]
+                              </span>
+                            )}
                         </span>
                         <StarRating rating={comment.rating} size="sm" />
                       </div>

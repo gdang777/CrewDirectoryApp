@@ -86,6 +86,21 @@
 - [x] **CityPage API Integration** - Real places from database
 - [x] **10 Seeded Places** - Copenhagen, Bangkok, Dubai, New York
 - [x] **Add Place Feature** - UI for users to submit new places
+- [x] **Interactive Map** - Leaflet-based map showing places on CityPage and PlaceDetailsPage
+
+### 9. Shopping Guide (Module B) ✨ NEW
+
+- [x] **ProductsPage** - Shopping guide with city comparisons
+- [x] **Price Comparison** - Compare home base prices with layover city
+- [x] **ProductAPI** - Endpoints for fetching products and price deltas
+- [x] **ProductCard** - Visual display of products with price difference
+
+### 10. Crew Chat (Module C) ✨ NEW
+
+- [x] **ChatPage** - Real-time chat functionality
+- [x] **City Rooms** - Dedicated chat rooms for each city
+- [x] **Socket.io Integration** - Real-time message delivery
+- [x] **Participant List** - See who else is in the room
 
 ---
 
@@ -107,7 +122,7 @@ _No features currently in progress_
 - [ ] **Search Functionality** - Search cities, places, properties
 - [ ] **Filtering & Sorting** - Filter by category, rating, distance
 - [ ] **Image Upload** - Upload images for places/properties
-- [ ] **Maps Integration** - Show locations on map (Mapbox)
+- [ ] **Image Upload** - Upload images for places/properties
 - [ ] **Moderator Dashboard** - Content moderation queue
 
 ### Lower Priority
@@ -276,6 +291,20 @@ _No features currently in progress_
 
 - Updated mockData.ts with imageUrl, rating, reviewCount fields
 - Changed company name to "Crew Lounge"
+
+### 2026-01-16 - Maps, Shopping & Chat
+
+**Added:**
+
+- **Interactive Maps**: Leaflet integration for displaying places on maps
+- **Shopping Guide**: Product comparison tool for crew members
+- **Crew Chat**: Real-time chat rooms for cities
+- **Socket.io Gateway**: Backend infrastructure for real-time features
+
+**Changed:**
+
+- Updated `CityPage` to include map view
+- Updated navigation to include Chat and Shopping
 
 ---
 
