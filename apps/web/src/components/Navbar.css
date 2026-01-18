@@ -2,9 +2,9 @@
     position: sticky;
     top: 0;
     z-index: 1000;
-    background: rgba(18, 18, 18, 0.95);
+    background: rgba(15, 15, 26, 0.95);
     backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     padding: 1rem 0;
     transition: all 0.3s ease;
 }
@@ -12,8 +12,10 @@
 .main-nav.transparent {
     background: transparent;
     border-bottom: none;
+    backdrop-filter: none;
     position: absolute;
     width: 100%;
+    left: 0;
 }
 
 .nav-container {
@@ -80,6 +82,17 @@
     gap: 1.5rem;
 }
 
+.nav-link {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: white;
+}
+
 .logout-btn {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -98,6 +111,5 @@
 @media (max-width: 768px) {
     .nav-links {
         display: none;
-        /* Mobile menu todo */
     }
 }

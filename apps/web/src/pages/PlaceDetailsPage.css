@@ -53,7 +53,7 @@
 
 /* Navigation */
 .details-nav {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
@@ -116,7 +116,7 @@
     background-size: cover;
     background-position: center;
     position: relative;
-    margin-top: 60px;
+    /* margin-top removed for sticky nav */
 }
 
 .hero-overlay {

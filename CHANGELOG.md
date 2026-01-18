@@ -88,7 +88,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- N/A
+- **Homepage Redesign**:
+  - Implemented complete visual overhaul with Dark/Neon features (`#050508` bg, cyan accents).
+  - Updated Hero section with reduced height (60vh) and glassmorphic search bar.
+  - Restyled "Popular Cities" and "Featured Listings" with new cards and "Verified" badges.
+  - Added specific "Designed Specifically for Aviation Professionals" features section.
+  - Updated Navbar to be sticky/transparent with blur effects and corrected auth buttons.
+  - Restored multi-column Footer with Platform, Company, and Legal links.
+  - Applied global typography and responsive grid adjustments.
 
 ### Deprecated
 

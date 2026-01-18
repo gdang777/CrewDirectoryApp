@@ -10,62 +10,7 @@
 }
 
 /* Navigation */
-.cities-nav {
-    background: rgba(15, 15, 26, 0.95);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-}
-
-.cities-nav .nav-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 1rem 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.cities-nav .nav-logo {
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #00d9ff;
-    text-decoration: none;
-}
-
-.cities-nav .nav-links {
-    display: flex;
-    gap: 2rem;
-}
-
-.cities-nav .nav-links a {
-    color: #a0a0a0;
-    text-decoration: none;
-    font-size: 0.95rem;
-    transition: color 0.2s;
-}
-
-.cities-nav .nav-links a:hover {
-    color: #00d9ff;
-}
-
-.cities-nav .nav-cta {
-    background: linear-gradient(135deg, #00d9ff, #00ff88);
-    color: #0f0f1a;
-    border: none;
-    padding: 0.6rem 1.25rem;
-    border-radius: 8px;
-    font-weight: 600;
-    text-decoration: none;
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.cities-nav .nav-cta:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
-}
+/* Navigation: Uses global Navbar component */
 
 /* Header */
 .cities-header {

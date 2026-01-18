@@ -22,42 +22,65 @@ const HomePage = () => {
   return (
     <div className="home-page">
       {/* Navigation */}
-      {/* Navigation */}
       <Navbar transparent />
 
       {/* Hero Section */}
       <header className="hero-section">
         <div className="hero-bg"></div>
+        <div className="hero-overlay"></div>
         <div className="hero-content">
           <h1>
-            The Aviation
+            The Global Hub
             <br />
-            Professional Platform
+            for <span className="text-gradient">Aviation Pros</span>
           </h1>
           <p className="hero-subtitle">
-            Find crew lounges, layover recommendations, and hidden gems tailored
-            for aviation professionals worldwide.
+            Unlock exclusive layover experiences and
+            <br />
+            professional connections globally.
           </p>
-          <div className="hero-search">
-            <input
-              type="text"
-              placeholder="Search cities or destinations..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
+
+          <div className="hero-search-container">
+            <div className="search-input-wrapper">
+              <input
+                type="text"
+                placeholder="Search cities or IATA codes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              <span className="search-icon">🔍</span>
+            </div>
             <button className="search-btn">Search</button>
+            <div className="search-dropdown-results">
+              {searchTerm && (
+                <div className="quick-results">
+                  <div className="result-item">
+                    <strong>DXB</strong> - Dubai
+                  </div>
+                  <div className="result-item">
+                    <strong>LHR</strong> - London
+                  </div>
+                  <div className="result-item">
+                    <strong>SIN</strong> - Singapore
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </header>
 
-      {/* Cities Section */}
-      <section id="cities" className="cities-section">
+      {/* Popular Layover Cities */}
+      <section id="cities" className="section cities-section">
         <div className="section-container">
-          <div className="section-header">
-            <span className="section-label">Explore</span>
+          <div className="section-header-row">
             <h2>Popular Layover Cities</h2>
-            <p>Discover the best spots in your favorite layover destinations</p>
+            <div className="header-actions">
+              <button className="nav-arrow prev">‹</button>
+              <button className="nav-arrow next">›</button>
+            </div>
           </div>
+
           <div className="cities-grid">
             {filteredCities.slice(0, 6).map((city) => (
               <Link
@@ -69,31 +92,34 @@ const HomePage = () => {
                   className="city-image"
                   style={{ backgroundImage: `url(${city.imageUrl})` }}
                 >
-                  <span className="city-badge">{city.placeCount} places</span>
+                  {city.placeCount > 15 && (
+                    <span className="verified-badge">Verified Crew</span>
+                  )}
                 </div>
                 <div className="city-info">
                   <h3>{city.name}</h3>
-                  <p>
-                    {city.country} • {city.code}
+                  <p className="city-meta">
+                    {city.country}, {city.code}
                   </p>
+                  <p className="city-places">{city.placeCount} places</p>
                 </div>
               </Link>
             ))}
           </div>
-          <Link to="/cities" className="view-all-btn">
-            View All Cities →
-          </Link>
         </div>
       </section>
 
       {/* Featured Listings */}
-      <section id="featured" className="featured-section">
+      <section id="featured" className="section featured-section">
         <div className="section-container">
-          <div className="section-header">
-            <span className="section-label">Crew Favorites</span>
+          <div className="section-header-row">
             <h2>Featured Listings</h2>
-            <p>Discover top-rated spots recommended by fellow crew members</p>
+            <div className="header-actions">
+              <button className="nav-arrow prev">‹</button>
+              <button className="nav-arrow next">›</button>
+            </div>
           </div>
+
           <div className="featured-grid">
             {featuredPlaces.map((place) => {
               const city = mockCities.find((c) => c.code === place.cityCode);
@@ -107,20 +133,16 @@ const HomePage = () => {
                     className="featured-image"
                     style={{ backgroundImage: `url(${city?.imageUrl})` }}
                   >
-                    <span className="featured-category">{place.category}</span>
+                    <span className="source-badge">Verified Crew</span>
                   </div>
                   <div className="featured-info">
                     <h3>{place.name}</h3>
                     <p className="featured-location">
-                      {city?.name}, {city?.country}
+                      {city?.name}, {city?.code}
                     </p>
-                    <p className="featured-description">
-                      {place.description.slice(0, 80)}...
+                    <p className="featured-places-count">
+                      {place.upvotes} recommended
                     </p>
-                    <div className="featured-meta">
-                      <span className="votes">👍 {place.upvotes}</span>
-                      <span className="added-by">{place.addedBy}</span>
-                    </div>
                   </div>
                 </Link>
               );
@@ -129,60 +151,43 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section id="about" className="features-section">
-        <div className="section-container">
-          <div className="section-header">
-            <h2>
-              Designed Specifically for
-              <br />
-              Aviation Professionals
-            </h2>
-            <p>
-              Our platform gives every flight attendant and pilot access to the
-              resources they need for comfortable layovers, income tips, and
-              aviation camaraderie.
-            </p>
-          </div>
-          <div className="features-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🗺️</div>
+      {/* Features Section (Designed Specifically) */}
+      <section id="features" className="section features-section">
+        <div className="features-bg-gradient"></div>
+        <div className="section-container text-center">
+          <p className="section-pre-title">Scroll-triggered animation</p>
+          <h2 className="section-title-large">
+            Designed Specifically for Aviation Professionals
+          </h2>
+
+          <div className="features-grid-cards">
+            <div className="feature-card-glow">
+              <div className="feature-icon home-icon">🏠</div>
               <h3>Crashpads & Vacation Rentals</h3>
-              <p>
-                Find short-term stays and crew houses in your base city or
-                layover destinations.
-              </p>
+              <p>Crashpads & vacation rentals and dorm-style places.</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">🍽️</div>
+            <div className="feature-card-glow">
+              <div className="feature-icon location-icon">📍</div>
               <h3>Layover Recommendations</h3>
-              <p>
-                Discover crew-approved restaurants, bars, and attractions in
-                every layover city.
-              </p>
+              <p>Access issues free most layover recommendations.</p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">✈️</div>
+            <div className="feature-card-glow">
+              <div className="feature-icon work-icon">💼</div>
               <h3>Aviation Gigs</h3>
               <p>
-                Explore side hustle opportunities and extra income tips tailored
-                for flight crew.
+                Offer someone carpooling and errands services aviation gigs.
               </p>
             </div>
-            <div className="feature-card">
-              <div className="feature-icon">✓</div>
+            <div className="feature-card-glow">
+              <div className="feature-icon group-icon">👥</div>
               <h3>Verified Community</h3>
-              <p>
-                Connect with verified airline employees and build trusted
-                connections.
-              </p>
+              <p>Verified Community connections for verified community.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="stats-section">
+      <section className="section stats-section">
         <div className="section-container">
           <div className="stats-grid">
             <div className="stat-item">
@@ -206,17 +211,14 @@ const HomePage = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="cta-section">
+      <section className="cta-section-bottom">
         <div className="section-container">
-          <h2>Join Our Aviation Community Today</h2>
-          <p>
-            Connect with thousands of aviation professionals, find your perfect
-            crashpad, discover layover recommendations, and grow your income
-            through gigs.
-          </p>
-          <div className="cta-buttons">
-            <button className="cta-primary">✈️ Start Exploring</button>
-            <button className="cta-secondary">🔐 Layover Sign In</button>
+          <div className="cta-box">
+            <h2>Join Our Aviation Community Today</h2>
+            <div className="cta-buttons-row">
+              <button className="cta-cyan">Start Exploring</button>
+              <button className="cta-glass">Layover Sign In</button>
+            </div>
           </div>
         </div>
       </section>
@@ -224,32 +226,38 @@ const HomePage = () => {
       {/* Footer */}
       <footer className="main-footer">
         <div className="section-container">
-          <div className="footer-grid">
-            <div className="footer-brand">
-              <h3>✈️ Crew Lounge</h3>
-              <p>
+          <div className="footer-content">
+            <div className="footer-brand-col">
+              <div className="footer-brand">
+                <span>✈️ Crew Lounge</span>
+              </div>
+              <p className="footer-desc">
                 The premier platform for aviation professionals to find
                 crashpads, layover spots, and community resources.
               </p>
             </div>
-            <div className="footer-links">
-              <h4>Platform</h4>
-              <a href="#">Cities</a>
-              <a href="#">Listings</a>
-              <a href="#">Community</a>
-            </div>
-            <div className="footer-links">
-              <h4>Company</h4>
-              <a href="#">About</a>
-              <a href="#">Partners</a>
-              <a href="#">Blog</a>
-            </div>
-            <div className="footer-links">
-              <h4>Legal</h4>
-              <a href="#">Terms of Service</a>
-              <a href="#">Privacy Policy</a>
+
+            <div className="footer-links-grid">
+              <div className="footer-col">
+                <h4>Platform</h4>
+                <a href="#">Cities</a>
+                <a href="#">Listings</a>
+                <a href="#">Community</a>
+              </div>
+              <div className="footer-col">
+                <h4>Company</h4>
+                <a href="#">About</a>
+                <a href="#">Partners</a>
+                <a href="#">Blog</a>
+              </div>
+              <div className="footer-col">
+                <h4>Legal</h4>
+                <a href="#">Terms of Service</a>
+                <a href="#">Privacy Policy</a>
+              </div>
             </div>
           </div>
+
           <div className="footer-bottom">
             <p>© 2026 Crew Lounge. All rights reserved.</p>
           </div>

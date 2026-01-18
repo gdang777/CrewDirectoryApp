@@ -9,8 +9,9 @@
 }
 
 /* Navigation - same as HomePage */
+/* Navigation - same as HomePage */
 .main-nav {
-    position: fixed;
+    position: sticky;
     top: 0;
     left: 0;
     right: 0;
@@ -71,7 +72,7 @@
 
 /* Page Header */
 .page-header {
-    padding: 8rem 2rem 3rem;
+    padding: 4rem 2rem 3rem;
     background: #0a0a14;
 }
 
