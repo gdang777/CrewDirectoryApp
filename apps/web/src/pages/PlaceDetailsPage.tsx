@@ -5,6 +5,7 @@ import { useChat } from '../context/ChatContext';
 import apiService, { Place, PlaceComment } from '../services/api';
 import StarRating from '../components/StarRating';
 import './PlaceDetailsPage.css';
+import { mockPlaces } from '../data/mockData';
 
 const categoryIcons: Record<string, string> = {
   eat: '🍽️',
@@ -51,19 +52,53 @@ const PlaceDetailsPage = () => {
     if (!placeId) return;
     try {
       setLoading(true);
-      const placeData = await apiService.getPlace(placeId);
-      setPlace(placeData);
-      setComments(placeData.comments || []);
-      setUpvotes(placeData.upvotes);
-      setDownvotes(placeData.downvotes);
+      try {
+        const placeData = await apiService.getPlace(placeId);
+        setPlace(placeData);
+        setComments(placeData.comments || []);
+        setUpvotes(placeData.upvotes);
+        setDownvotes(placeData.downvotes);
+      } catch (apiErr) {
+        console.warn('API lookup failed, falling back to mock data', apiErr);
+        // Fallback to mock data
+        const mockPlace = mockPlaces.find((p) => p.id === placeId);
+        if (mockPlace) {
+          // Adapt mock place to Place interface if needed, or cast it
+          // The mockData MockPlace might slightly differ from API Place,
+          // but based on shared interfaces they should be compatible.
+          // We need to ensure types match.
+          // mockPlace.createdAt is Date, API expects string.
+          const adaptedPlace: any = {
+            ...mockPlace,
+            createdAt: mockPlace.createdAt.toISOString(),
+            // Mock data structure differences needs handling?
+            // mockData Place has comments as PlaceComment[], API Place has them too.
+            // mockData PlaceComment has createdAt as Date, API expects string.
+          };
 
-      // Get user's vote if authenticated
+          if (mockPlace.comments) {
+            adaptedPlace.comments = mockPlace.comments.map((c) => ({
+              ...c,
+              createdAt: c.createdAt.toISOString(),
+            }));
+          }
+
+          setPlace(adaptedPlace);
+          setComments(adaptedPlace.comments || []);
+          setUpvotes(adaptedPlace.upvotes);
+          setDownvotes(adaptedPlace.downvotes);
+        } else {
+          throw new Error('Place not found in API or Mock data');
+        }
+      }
+
+      // Get user's vote if authenticated (only if API worked? or mock always 0)
       if (isAuthenticated) {
         try {
           const vote = await apiService.getPlaceVote(placeId);
           setUserVote(vote.value);
         } catch {
-          // User hasn't voted
+          // User hasn't voted or API failed
         }
       }
     } catch (err) {

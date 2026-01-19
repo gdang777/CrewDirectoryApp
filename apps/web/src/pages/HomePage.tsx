@@ -125,7 +125,7 @@ const HomePage = () => {
               const city = mockCities.find((c) => c.code === place.cityCode);
               return (
                 <Link
-                  to={`/city/${place.cityCode}`}
+                  to={`/place/${place.id}`}
                   key={place.id}
                   className="featured-card"
                 >

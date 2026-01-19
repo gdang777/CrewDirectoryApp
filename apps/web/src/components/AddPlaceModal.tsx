@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import apiService, { CreatePlaceData, PlaceCategory } from '../services/api';
+import ImageUpload from './ImageUpload';
 import './AddPlaceModal.css';
 
 interface AddPlaceModalProps {
@@ -14,30 +15,6 @@ const categories: { key: PlaceCategory; label: string; icon: string }[] = [
   { key: 'shop', label: 'Shop', icon: '🛍️' },
   { key: 'visit', label: 'Visit', icon: '📍' },
 ];
-
-// Placeholder images by category
-const categoryImages: Record<PlaceCategory, string[]> = {
-  eat: [
-    'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&fit=crop',
-  ],
-  drink: [
-    'https://images.unsplash.com/photo-1514362545857-3bc16549766b?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=800&fit=crop',
-  ],
-  shop: [
-    'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1472851294608-415522f96485?w=800&fit=crop',
-  ],
-  visit: [
-    'https://images.unsplash.com/photo-1565057430174-c05716df7ce0?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&fit=crop',
-    'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=800&fit=crop',
-  ],
-};
 
 const AddPlaceModal = ({ cityId, onClose, onSuccess }: AddPlaceModalProps) => {
   const [formData, setFormData] = useState<Omit<CreatePlaceData, 'cityId'>>({
@@ -62,17 +39,9 @@ const AddPlaceModal = ({ cityId, onClose, onSuccess }: AddPlaceModalProps) => {
     setError(null);
 
     try {
-      // Pick a random image if none provided
-      let imageUrl = formData.imageUrl;
-      if (!imageUrl) {
-        const images = categoryImages[formData.category];
-        imageUrl = images[Math.floor(Math.random() * images.length)];
-      }
-
       await apiService.createPlace({
         ...formData,
         cityId,
-        imageUrl,
       });
 
       onSuccess();
@@ -193,21 +162,12 @@ const AddPlaceModal = ({ cityId, onClose, onSuccess }: AddPlaceModalProps) => {
             />
           </div>
 
-          <div className="form-group">
-            <label>Image URL (Optional)</label>
-            <input
-              type="url"
-              placeholder="https://example.com/image.jpg"
-              value={formData.imageUrl}
-              onChange={(e) =>
-                setFormData({ ...formData, imageUrl: e.target.value })
-              }
-              disabled={loading}
-            />
-            <small className="hint">
-              Leave empty to use a random cool image.
-            </small>
-          </div>
+          <ImageUpload
+            category="places"
+            onUpload={(url) => setFormData({ ...formData, imageUrl: url })}
+            currentImage={formData.imageUrl}
+            label="Place Image (Optional)"
+          />
 
           <div className="form-actions">
             <button

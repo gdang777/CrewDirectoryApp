@@ -16,21 +16,31 @@ import {
   UpdatePlaceDto,
   CreateCommentDto,
   VotePlaceDto,
+  FindAllPlacesDto,
 } from './dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { PlaceCategory } from './entities/place.entity';
 
 @Controller('places')
 export class PlacesController {
   constructor(private readonly placesService: PlacesService) {}
 
   @Get()
-  async findAll(
-    @Query('cityId') cityId?: string,
-    @Query('cityCode') cityCode?: string,
-    @Query('category') category?: PlaceCategory
-  ) {
-    return this.placesService.findAll({ cityId, cityCode, category });
+  async findAll(@Query() queryDto: FindAllPlacesDto) {
+    return this.placesService.findAll({
+      cityId: queryDto.cityId,
+      cityCode: queryDto.cityCode,
+      category: queryDto.category,
+      search: queryDto.search,
+      minRating: queryDto.minRating,
+      maxRating: queryDto.maxRating,
+      sortBy: queryDto.sortBy,
+      sortOrder: queryDto.sortOrder,
+      latitude: queryDto.latitude,
+      longitude: queryDto.longitude,
+      radius: queryDto.radius,
+      limit: queryDto.limit,
+      offset: queryDto.offset,
+    });
   }
 
   @Get(':id')

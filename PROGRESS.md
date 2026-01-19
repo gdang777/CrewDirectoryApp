@@ -1,6 +1,6 @@
 # Crew Lounge - Development Progress
 
-> **Last Updated:** 2026-01-16  
+> **Last Updated:** 2026-01-19  
 > **Status:** Active Development
 
 ---
@@ -19,6 +19,7 @@
 - [x] **Database Schema** - Tables created via TypeORM (cities, users, playbooks, POIs, products, etc.)
 - [x] **Seed Data** - 5 cities (Copenhagen, Bangkok, Dubai, New York, London) + 6 products
 - [x] **Environment Configuration** - DATABASE_URL with SSL support for cloud connections
+- [x] **Image Upload System** - Supabase Storage integration for file uploads ✨ NEW
 
 ### 2. Authentication (Full Stack) ✨ NEW
 
@@ -102,6 +103,34 @@
 - [x] **Socket.io Integration** - Real-time message delivery
 - [x] **Participant List** - See who else is in the room
 
+### 11. Image Upload System ✨ NEW
+
+- [x] **UploadModule** - Backend module for file uploads
+- [x] **Supabase Storage Integration** - Cloud storage for images
+- [x] **ImageUpload Component** - Reusable drag-and-drop upload UI
+- [x] **File Validation** - Type (JPEG, PNG, WebP, GIF) and size (5MB max) checks
+- [x] **Protected Upload Endpoint** - POST /upload/image with JWT authentication
+- [x] **Delete Endpoint** - DELETE /upload/image for cleanup
+- [x] **AddPlaceModal Integration** - Replace URL input with drag-and-drop upload
+- [x] **Database Fields** - imageUrl for cities, avatarUrl for users
+- [x] **Unique Filenames** - UUID + timestamp to prevent collisions
+- [x] **Organized Storage** - Categorized folders (places/, cities/, avatars/, properties/)
+
+### 12. Search & Filter Features ✨ NEW
+
+- [x] **PostgreSQL Full-Text Search** - tsvector columns with weighted search
+- [x] **GIN Indexes** - Fast full-text search queries
+- [x] **Auto-Update Triggers** - search_vector updates automatically
+- [x] **Text Search** - Search places by name, description, tips, address
+- [x] **Rating Filter** - Filter by minimum rating (2+, 3+, 4+ stars)
+- [x] **Multiple Sort Options** - Sort by rating, popular, newest, oldest
+- [x] **Distance Search** - PostGIS radius search (ready for geolocation)
+- [x] **Enhanced API** - 13 query parameters for advanced filtering
+- [x] **CityPage Integration** - Search input, rating filter, sort dropdown
+- [x] **Backend-Driven Filtering** - Moved from client-side to server-side
+- [x] **Pagination-Ready** - limit/offset parameters for infinite scroll
+- [x] **Glassmorphic UI** - Matches existing dark/neon design aesthetic
+
 ---
 
 ## 🔄 In Progress
@@ -114,15 +143,14 @@ _No features currently in progress_
 
 ### High Priority
 
-- [ ] **Image Upload** - Real image upload instead of URLs
+- [ ] **Extend Image Upload** - Add to cities, properties, user avatars
+- [ ] **Global Search** - Search bar in navbar across all content
+- [ ] **Search Autocomplete** - Suggestions as you type
 
 ### Medium Priority
 
 - [ ] **Layovers/Gigs Feature** - Work opportunities for crew
-- [ ] **Search Functionality** - Search cities, places, properties
-- [ ] **Filtering & Sorting** - Filter by category, rating, distance
-- [ ] **Image Upload** - Upload images for places/properties
-- [ ] **Image Upload** - Upload images for places/properties
+- [ ] **Advanced Filters** - Distance filter with geolocation, price range
 - [ ] **Moderator Dashboard** - Content moderation queue
 
 ### Lower Priority
@@ -144,6 +172,110 @@ _No features currently in progress_
 ---
 
 ## 📜 Change Log
+
+### 2026-01-19 - Search & Filter Features
+
+**Added:**
+
+- **PostgreSQL Full-Text Search** - Database migration: `AddFullTextSearch`
+  - `search_vector` tsvector column on places and cities tables
+  - GIN indexes for fast full-text search
+  - Auto-update triggers to maintain search vectors
+  - Weighted search: name (A), description (B), tips (C), address (D)
+- **Enhanced Places API** - 13 query parameters
+  - `search` - Full-text search across name, description, tips, address
+  - `minRating` / `maxRating` - Filter by star rating (0-5)
+  - `sortBy` - Sort by rating, newest, oldest, popular, distance
+  - `sortOrder` - ASC or DESC ordering
+  - `latitude` / `longitude` / `radius` - PostGIS distance search (km)
+  - `limit` / `offset` - Pagination support
+- **FindAllPlacesDto** - Validation DTO with class-validator decorators
+- **CityPage Search UI** - Integrated into existing header
+  - Search input with glassmorphic design
+  - Rating filter dropdown (All, 4+, 3+, 2+ stars)
+  - Sort dropdown (Top Rated, Most Popular, Newest, Oldest)
+  - Matches existing dark/neon aesthetic
+- **Backend-Driven Filtering** - Moved logic from client to server
+
+**Changed:**
+
+- `PlacesService.findAll()` - Enhanced with search, filters, sorting, pagination
+- `PlacesController` - Updated GET /places endpoint to use FindAllPlacesDto
+- `api.ts` - Enhanced getPlaces() method with 10 new parameters
+- `CityPage.tsx` - Added search/filter/sort state and UI controls
+- Removed client-side filtering and sorting (now backend-driven)
+
+**Performance:**
+
+- GIN indexes enable sub-millisecond full-text searches
+- PostGIS spatial indexes for distance queries
+- Pagination-ready for infinite scroll
+- Scalable to tens of thousands of records
+
+**API Examples:**
+
+```bash
+# Search for coffee places
+GET /places?cityCode=CPH&search=coffee&minRating=4
+
+# Popular places, newest first
+GET /places?cityCode=JFK&sortBy=popular
+
+# Places within 5km radius
+GET /places?latitude=55.67&longitude=12.56&radius=5&sortBy=distance
+```
+
+---
+
+### 2026-01-19 - Image Upload System
+
+**Added:**
+
+- `UploadModule` - New NestJS module for handling file uploads
+- `UploadService` - Service with Supabase Storage integration
+  - Automatic Supabase URL extraction from DATABASE_URL
+  - File validation (JPEG, PNG, WebP, GIF, max 5MB)
+  - Unique filename generation (UUID + timestamp)
+  - Organized storage structure (places/, cities/, avatars/, properties/)
+  - Image deletion support for cleanup
+- `UploadController` - Protected upload endpoints
+  - POST `/upload/image` - Upload single image, returns public URL
+  - DELETE `/upload/image` - Delete image from storage
+- `ImageUpload` component - Reusable React component
+  - Drag-and-drop file selection
+  - Instant image preview
+  - Upload progress indicator
+  - Change/Remove image functionality
+  - Client-side validation
+  - Beautiful glassmorphic design
+- Database migration: `AddImageFields`
+  - Added `imageUrl` column to `cities` table
+  - Added `avatarUrl` column to `users` table
+- Dependencies: `@supabase/supabase-js`, `multer`, `@nestjs/platform-express`
+
+**Changed:**
+
+- Updated `AddPlaceModal` - Replaced URL input with ImageUpload component
+- Removed random image fallback logic from place creation
+- Updated `api.ts` - Added `uploadImage()` and `deleteImage()` methods
+- Fixed unused React import in `ErrorBoundary` component
+
+**API Endpoints:**
+
+| Endpoint        | Method | Auth | Description                           |
+| --------------- | ------ | ---- | ------------------------------------- |
+| `/upload/image` | POST   | JWT  | Upload image file, returns public URL |
+| `/upload/image` | DELETE | JWT  | Delete image from Supabase Storage    |
+
+**Technical Notes:**
+
+- Requires Supabase Storage bucket: `crew-lounge-images` (must be PUBLIC)
+- Requires `SUPABASE_SERVICE_KEY` environment variable
+- Service automatically extracts Supabase URL from DATABASE_URL
+- Backward compatible: existing URL-based images continue to work
+- All uploads are JWT-protected
+
+---
 
 ### 2026-01-16 - Places API, Comments, Voting & Star Ratings
 

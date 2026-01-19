@@ -47,9 +47,16 @@ const CityPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
+  // Search and Filter state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [minRating, setMinRating] = useState<number>(0);
+  const [sortBy, setSortBy] = useState<
+    'rating' | 'newest' | 'oldest' | 'popular'
+  >('rating');
+
   useEffect(() => {
     loadData();
-  }, [cityCode]);
+  }, [cityCode, activeCategory, searchQuery, minRating, sortBy]);
 
   const loadData = async () => {
     if (!cityCode) return;
@@ -57,7 +64,16 @@ const CityPage = () => {
       setLoading(true);
       const [cityData, placesData] = await Promise.all([
         apiService.getCityByCode(cityCode.toUpperCase()),
-        apiService.getPlaces({ cityCode: cityCode.toUpperCase() }),
+        apiService.getPlaces({
+          cityCode: cityCode.toUpperCase(),
+          category:
+            activeCategory === 'guide' || activeCategory === 'chat'
+              ? undefined
+              : activeCategory,
+          search: searchQuery || undefined,
+          minRating: minRating > 0 ? minRating : undefined,
+          sortBy,
+        }),
       ]);
       setCity(cityData);
       setPlaces(placesData);
@@ -120,7 +136,9 @@ const CityPage = () => {
     );
   }
 
-  const filteredPlaces = places.filter((p) => p.category === activeCategory);
+  // No need for client-side filtering anymore - backend handles it
+  const displayPlaces =
+    activeCategory === 'guide' || activeCategory === 'chat' ? [] : places;
   const cityImage =
     cityImages[city.code] ||
     'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&h=400&fit=crop';
@@ -154,7 +172,7 @@ const CityPage = () => {
             <span className="tab-icon">{cat.icon}</span>
             <span className="tab-label">{cat.label}</span>
             <span className="tab-count">
-              {places.filter((p) => p.category === cat.key).length}
+              {cat.key === activeCategory ? places.length : 0}
             </span>
           </button>
         ))}
@@ -170,6 +188,51 @@ const CityPage = () => {
           </div>
 
           <div className="header-right">
+            {activeCategory !== 'guide' && activeCategory !== 'chat' && (
+              <>
+                {/* Search Input */}
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder="Search places..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+
+                {/* Rating Filter */}
+                <select
+                  className="filter-select"
+                  value={minRating}
+                  onChange={(e) => setMinRating(Number(e.target.value))}
+                >
+                  <option value={0}>All Ratings</option>
+                  <option value={4}>4+ Stars</option>
+                  <option value={3}>3+ Stars</option>
+                  <option value={2}>2+ Stars</option>
+                </select>
+
+                {/* Sort Dropdown */}
+                <select
+                  className="filter-select"
+                  value={sortBy}
+                  onChange={(e) =>
+                    setSortBy(
+                      e.target.value as
+                        | 'rating'
+                        | 'newest'
+                        | 'oldest'
+                        | 'popular'
+                    )
+                  }
+                >
+                  <option value="rating">Top Rated</option>
+                  <option value="popular">Most Popular</option>
+                  <option value="newest">Newest</option>
+                  <option value="oldest">Oldest</option>
+                </select>
+              </>
+            )}
+
             {activeCategory !== 'guide' && (
               <div className="view-toggle">
                 <button
@@ -197,23 +260,19 @@ const CityPage = () => {
         ) : activeCategory === 'chat' ? (
           <CityChatList cityCode={city.code} />
         ) : viewMode === 'map' ? (
-          <MapComponent places={filteredPlaces} city={city} />
-        ) : filteredPlaces.length === 0 ? (
+          <MapComponent places={displayPlaces} city={city} />
+        ) : displayPlaces.length === 0 ? (
           <div className="empty-state">
-            <p>No places yet in this category.</p>
+            <p>No places found.</p>
             <button className="empty-hint-btn" onClick={handleAddClick}>
               Be the first to add one!
             </button>
           </div>
         ) : (
           <div className="places-grid">
-            {filteredPlaces
-              .sort(
-                (a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes)
-              )
-              .map((place) => (
-                <PlaceCard key={place.id} place={place} onVote={handleVote} />
-              ))}
+            {displayPlaces.map((place) => (
+              <PlaceCard key={place.id} place={place} onVote={handleVote} />
+            ))}
           </div>
         )}
       </main>

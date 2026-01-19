@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Search & Filter Features** - Full-text search and advanced filtering
+  - PostgreSQL full-text search with tsvector and GIN indexes
+  - Auto-update triggers for search_vector maintenance
+  - Weighted search (name > description > tips > address)
+  - Enhanced Places API with 13 query parameters
+  - Text search, rating filter, multiple sort options
+  - PostGIS distance/radius search (latitude, longitude, radius)
+  - Pagination support (limit, offset)
+  - FindAllPlacesDto with comprehensive validation
+  - CityPage UI: search input, rating filter, sort dropdown
+  - Glassmorphic controls matching dark/neon theme
+  - Backend-driven filtering (moved from client-side)
+  - Migration: AddFullTextSearch for places and cities
+- **Image Upload System** - Complete file upload infrastructure
+  - UploadModule with Supabase Storage integration
+  - UploadService with file validation (JPEG, PNG, WebP, GIF, max 5MB)
+  - UploadController with protected JWT endpoints
+  - POST `/upload/image` endpoint for image uploads
+  - DELETE `/upload/image` endpoint for image deletion
+  - ImageUpload React component with drag-and-drop support
+  - Instant image preview and upload progress indicator
+  - Unique filename generation using UUID + timestamp
+  - Organized storage structure (places/, cities/, avatars/, properties/)
+  - Database migration adding `imageUrl` to cities, `avatarUrl` to users
+  - Integration into AddPlaceModal (replaced URL input)
+  - Dependencies: @supabase/supabase-js, multer, @nestjs/platform-express
 - Comprehensive testing infrastructure with Jest for API and Vitest for web app
 - Unit tests for AppController and AppService
 - Unit tests for PlaybooksService with mocked repositories
@@ -96,6 +122,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated Navbar to be sticky/transparent with blur effects and corrected auth buttons.
   - Restored multi-column Footer with Platform, Company, and Legal links.
   - Applied global typography and responsive grid adjustments.
+- **AddPlaceModal**: Replaced URL input field with ImageUpload component for better UX
+- **API Service**: Added `uploadImage()` and `deleteImage()` methods with multipart/form-data support
+- **Place Creation**: Removed random image fallback logic, now uses actual uploaded images
+- **Entity Updates**: Added `imageUrl` field to City entity, `avatarUrl` field to User entity
+- **ErrorBoundary**: Fixed unused React import (TypeScript lint error)
 
 ### Deprecated
 

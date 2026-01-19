@@ -45,6 +45,9 @@ export class User {
   })
   role: UserRole;
 
+  @Column({ nullable: true })
+  avatarUrl: string;
+
   @Column({ default: false })
   verifiedBadge: boolean;
 

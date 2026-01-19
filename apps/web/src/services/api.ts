@@ -243,6 +243,33 @@ class ApiService {
     return response.json();
   }
 
+  private async uploadRequest<T>(
+    endpoint: string,
+    formData: FormData
+  ): Promise<T> {
+    const headers: HeadersInit = {};
+
+    if (this.token) {
+      (headers as Record<string, string>)['Authorization'] =
+        `Bearer ${this.token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const error = await response
+        .json()
+        .catch(() => ({ message: 'Upload failed' }));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    return response.json();
+  }
+
   // Auth methods
   setToken(token: string) {
     this.token = token;
@@ -297,6 +324,29 @@ class ApiService {
       }
     }
     return null;
+  }
+
+  // Upload methods
+  async uploadImage(
+    file: File,
+    category: 'places' | 'cities' | 'avatars' | 'properties'
+  ): Promise<string> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('category', category);
+
+    const response = await this.uploadRequest<{ imageUrl: string }>(
+      '/upload/image',
+      formData
+    );
+    return response.imageUrl;
+  }
+
+  async deleteImage(imageUrl: string): Promise<void> {
+    await this.request('/upload/image', {
+      method: 'DELETE',
+      body: JSON.stringify({ imageUrl }),
+    });
   }
 
   // Cities
@@ -376,11 +426,38 @@ class ApiService {
     cityId?: string;
     cityCode?: string;
     category?: PlaceCategory;
+    search?: string;
+    minRating?: number;
+    maxRating?: number;
+    sortBy?: 'rating' | 'newest' | 'oldest' | 'popular' | 'distance';
+    sortOrder?: 'ASC' | 'DESC';
+    latitude?: number;
+    longitude?: number;
+    radius?: number;
+    limit?: number;
+    offset?: number;
   }): Promise<Place[]> {
     const params = new URLSearchParams();
     if (options?.cityId) params.append('cityId', options.cityId);
     if (options?.cityCode) params.append('cityCode', options.cityCode);
     if (options?.category) params.append('category', options.category);
+    if (options?.search) params.append('search', options.search);
+    if (options?.minRating !== undefined)
+      params.append('minRating', String(options.minRating));
+    if (options?.maxRating !== undefined)
+      params.append('maxRating', String(options.maxRating));
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.latitude !== undefined)
+      params.append('latitude', String(options.latitude));
+    if (options?.longitude !== undefined)
+      params.append('longitude', String(options.longitude));
+    if (options?.radius !== undefined)
+      params.append('radius', String(options.radius));
+    if (options?.limit !== undefined)
+      params.append('limit', String(options.limit));
+    if (options?.offset !== undefined)
+      params.append('offset', String(options.offset));
     const query = params.toString() ? `?${params.toString()}` : '';
     return this.request<Place[]>(`/places${query}`);
   }

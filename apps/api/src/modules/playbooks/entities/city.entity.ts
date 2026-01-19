@@ -30,6 +30,9 @@ export class City {
   })
   coordinates: Point;
 
+  @Column({ nullable: true })
+  imageUrl: string;
+
   @CreateDateColumn()
   createdAt: Date;
 

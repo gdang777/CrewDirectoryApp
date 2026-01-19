@@ -36,13 +36,23 @@ export class PlacesService {
     cityId?: string;
     cityCode?: string;
     category?: PlaceCategory;
+    search?: string;
+    minRating?: number;
+    maxRating?: number;
+    sortBy?: string;
+    sortOrder?: 'ASC' | 'DESC';
+    latitude?: number;
+    longitude?: number;
+    radius?: number;
+    limit?: number;
+    offset?: number;
   }): Promise<Place[]> {
     const query = this.placeRepository
       .createQueryBuilder('place')
       .leftJoinAndSelect('place.city', 'city')
-      .leftJoinAndSelect('place.createdBy', 'createdBy')
-      .orderBy('place.rating', 'DESC');
+      .leftJoinAndSelect('place.createdBy', 'createdBy');
 
+    // City filtering
     if (options?.cityId) {
       query.andWhere('place.cityId = :cityId', { cityId: options.cityId });
     }
@@ -53,10 +63,98 @@ export class PlacesService {
       });
     }
 
+    // Category filtering
     if (options?.category) {
       query.andWhere('place.category = :category', {
         category: options.category,
       });
+    }
+
+    // Full-text search
+    if (options?.search) {
+      query.andWhere(
+        `place.search_vector @@ plainto_tsquery('english', :search)`,
+        { search: options.search }
+      );
+    }
+
+    // Rating filtering
+    if (options?.minRating !== undefined) {
+      query.andWhere('place.rating >= :minRating', {
+        minRating: options.minRating,
+      });
+    }
+
+    if (options?.maxRating !== undefined) {
+      query.andWhere('place.rating <= :maxRating', {
+        maxRating: options.maxRating,
+      });
+    }
+
+    // Distance filtering (PostGIS)
+    if (
+      options?.latitude !== undefined &&
+      options?.longitude !== undefined &&
+      options?.radius
+    ) {
+      query.andWhere(
+        `ST_DWithin(
+          ST_SetSRID(ST_MakePoint(place.longitude, place.latitude), 4326)::geography,
+          ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography,
+          :radius * 1000
+        )`,
+        {
+          lat: options.latitude,
+          lng: options.longitude,
+          radius: options.radius,
+        }
+      );
+
+      // Add distance calculation for sorting
+      query.addSelect(
+        `ST_Distance(
+          ST_SetSRID(ST_MakePoint(place.longitude, place.latitude), 4326)::geography,
+          ST_SetSRID(ST_MakePoint(:lng, :lat), 4326)::geography
+        ) / 1000`,
+        'distance'
+      );
+    }
+
+    // Sorting
+    const sortOrder = options?.sortOrder || 'DESC';
+    switch (options?.sortBy) {
+      case 'rating':
+        query.orderBy('place.rating', sortOrder);
+        break;
+      case 'newest':
+        query.orderBy('place.createdAt', 'DESC');
+        break;
+      case 'oldest':
+        query.orderBy('place.createdAt', 'ASC');
+        break;
+      case 'popular':
+        query.orderBy('(place.upvotes - place.downvotes)', 'DESC');
+        break;
+      case 'distance':
+        if (options?.latitude && options?.longitude) {
+          query.orderBy('distance', 'ASC');
+        } else {
+          // Fallback to rating if no location provided
+          query.orderBy('place.rating', 'DESC');
+        }
+        break;
+      default:
+        // Default: sort by rating
+        query.orderBy('place.rating', 'DESC');
+    }
+
+    // Pagination
+    if (options?.limit) {
+      query.take(options.limit);
+    }
+
+    if (options?.offset) {
+      query.skip(options.offset);
     }
 
     return query.getMany();

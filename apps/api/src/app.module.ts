@@ -14,6 +14,7 @@ import { AudioWalksModule } from './modules/audio-walks/audio-walks.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UsersModule } from './modules/users/users.module';
 import { PlacesModule } from './modules/places/places.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { PlacesModule } from './modules/places/places.module';
     UsersModule,
     PlacesModule,
     ChatModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [AppService],
