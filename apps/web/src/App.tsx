@@ -14,6 +14,7 @@ import ProductsPage from './pages/ProductsPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
+import PropertyDetailsPage from './pages/PropertyDetailsPage';
 import './App.css';
 
 function App() {
@@ -29,6 +30,10 @@ function App() {
             <Route path="/place/:placeId" element={<PlaceDetailsPage />} />
             <Route path="/shopping" element={<ProductsPage />} />
             <Route path="/properties" element={<PropertiesPage />} />
+            <Route
+              path="/property/:propertyId"
+              element={<PropertyDetailsPage />}
+            />
             <Route path="/auth" element={<AuthPage />} />
 
             {/* Chat Route - Protected by Logic inside page or wrap here */}

@@ -20,6 +20,27 @@
 - **Custom Airplane Loading Animation**: Replaced generic loading spinner with animated airplane orbit loader. Applied to `CityPage`, `PlaceDetailsPage`, `ProductsPage`, `AllCitiesPage`.
 - **Add Property Sign-In Prompt**: Added a styled modal that prompts unauthenticated users to sign in before adding a property listing.
 
+### Property Details Page (Feature Complete)
+
+- **Date**: 2026-01-20
+- **Status**: **COMPLETE**
+- **Description**: Built a comprehensive property details page accessible via "View Details" button.
+- **Technical Changes**:
+  - Created `PropertyDetailsPage.tsx` with hero image, amenities grid, description, house rules, and booking card.
+  - Created `PropertyDetailsPage.css` with dark/neon theme styling.
+  - Added route `/property/:propertyId` to `App.tsx`.
+  - Updated `PropertyCard` to link to details page.
+
+### Property Host Messaging (Feature Complete)
+
+- **Date**: 2026-01-20
+- **Status**: **COMPLETE**
+- **Description**: Enabled potential tenants to contact property hosts via chat.
+- **Technical Changes**:
+  - Updated "Contact Host" button to navigate to `/chat/property-{propertyId}`.
+  - Added authentication check with styled sign-in modal.
+  - Integrated with existing `ChatPage` infrastructure.
+
 ---
 
 ### AI Provider Switch (Feature Skipped)

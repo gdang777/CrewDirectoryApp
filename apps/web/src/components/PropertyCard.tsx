@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Property } from '../data/mockData';
 import './PropertyCard.css';
 
@@ -56,7 +57,9 @@ const PropertyCard = ({ property, onToggleFavorite }: PropertyCardProps) => {
             <span className="price-amount">${property.price}</span>
             <span className="price-period">/ night</span>
           </div>
-          <button className="view-details-btn">View Details</button>
+          <Link to={`/property/${property.id}`} className="view-details-btn">
+            View Details
+          </Link>
         </div>
       </div>
     </div>

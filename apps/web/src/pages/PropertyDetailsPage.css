@@ -1,0 +1,500 @@
+/* ========================================
+   PROPERTY DETAILS PAGE STYLES
+   ======================================== */
+
+.property-details-page {
+    min-height: 100vh;
+    background: #0f0f1a;
+    color: white;
+}
+
+/* Not Found State */
+.property-details-page.not-found {
+    display: flex;
+    flex-direction: column;
+}
+
+.not-found-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 2rem;
+}
+
+.not-found-content h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.not-found-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.not-found-content p {
+    color: #888;
+    margin-bottom: 2rem;
+}
+
+.not-found-content .back-btn {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+.not-found-content .back-btn:hover {
+    transform: scale(1.05);
+}
+
+/* Hero Section */
+.property-hero {
+    position: relative;
+    height: 400px;
+}
+
+.hero-image {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0.6) 0%, transparent 100%);
+}
+
+.back-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: opacity 0.2s;
+}
+
+.back-link:hover {
+    opacity: 0.8;
+}
+
+/* Main Content */
+.property-main {
+    padding: 2rem;
+}
+
+.property-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 2rem;
+}
+
+/* Left Column - Property Info */
+.property-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.property-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.type-badge {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: capitalize;
+}
+
+.property-type-badge {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+}
+
+.rating-badge {
+    background: rgba(255, 193, 7, 0.1);
+    border: 1px solid rgba(255, 193, 7, 0.3);
+    color: #ffc107;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+}
+
+.property-info h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.property-info .location {
+    color: #888;
+    font-size: 1rem;
+}
+
+/* Amenities */
+.amenities-section h2,
+.description-section h2,
+.rules-section h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.amenities-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.amenity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+.amenity-icon {
+    font-size: 1.5rem;
+}
+
+/* Description */
+.description-section p {
+    color: #aaa;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* House Rules */
+.rules-section ul {
+    list-style: none;
+    padding: 0;
+}
+
+.rules-section li {
+    color: #aaa;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.rules-section li::before {
+    content: '✓';
+    color: #00d9ff;
+}
+
+/* Right Column - Booking Card */
+.booking-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.booking-card {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(0, 217, 255, 0.2);
+    border-radius: 16px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    position: sticky;
+    top: 100px;
+}
+
+.price-section {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+}
+
+.price-amount {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00d9ff;
+}
+
+.price-period {
+    color: #888;
+    font-size: 1rem;
+}
+
+.host-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.host-avatar {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.25rem;
+}
+
+.host-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.host-name {
+    font-weight: 600;
+}
+
+.host-airline {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.contact-btn,
+.book-btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.contact-btn {
+    background: transparent;
+    border: 2px solid #00d9ff;
+    color: #00d9ff;
+}
+
+.contact-btn:hover {
+    background: rgba(0, 217, 255, 0.1);
+}
+
+.book-btn {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    border: none;
+    color: #0f0f1a;
+}
+
+.book-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+}
+
+.booking-note {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: #888;
+}
+
+/* Map Placeholder */
+.map-placeholder {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-content {
+    text-align: center;
+    color: #666;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.map-icon {
+    font-size: 2rem;
+}
+
+.airport-distance {
+    font-size: 0.85rem;
+    color: #00d9ff;
+}
+
+/* Reviews Section */
+.reviews-section {
+    padding: 2rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.reviews-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.no-reviews,
+.reviews-placeholder {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px dashed rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .property-container {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-card {
+        position: static;
+    }
+
+    .property-hero {
+        height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .property-info h1 {
+        font-size: 1.5rem;
+    }
+
+    .amenities-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .property-hero {
+        height: 250px;
+    }
+}
+
+/* Sign-In Prompt Modal */
+.sign-in-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign-in-prompt-modal {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.prompt-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.sign-in-prompt-modal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+.sign-in-prompt-modal p {
+    color: #888;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.prompt-btn {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.prompt-btn.primary {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+}
+
+.prompt-btn.primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+}
+
+.prompt-btn.secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #888;
+}
+
+.prompt-btn.secondary:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}
