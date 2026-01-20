@@ -10,6 +10,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { JwtService } from '@nestjs/jwt';
+import { Inject, Optional } from '@nestjs/common';
 
 @WebSocketGateway({
   cors: {
@@ -22,7 +23,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(
     private readonly chatService: ChatService,
-    private readonly jwtService: JwtService
+    private readonly jwtService: JwtService,
+    @Optional() @Inject('AiChatService') private readonly aiChatService?: any
   ) {}
 
   async handleConnection(client: Socket) {
@@ -133,5 +135,45 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.server.to(data.roomId).emit('newMessage', message);
 
     return { status: 'sent', message };
+  }
+
+  @SubscribeMessage('sendAIMessage')
+  async handleAIMessage(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { cityCode: string; message: string }
+  ) {
+    if (!client.data.userId) return;
+
+    // Check if AI service is available
+    if (!this.aiChatService) {
+      client.emit('aiError', {
+        error:
+          'AI features are not available. Please configure OpenAI API key.',
+      });
+      return { status: 'error', message: 'AI not configured' };
+    }
+
+    try {
+      // Get AI response
+      const response = await this.aiChatService.handleChatMessage(
+        client.data.userId,
+        data.cityCode,
+        data.message
+      );
+
+      // Send AI response back to user
+      client.emit('aiResponse', {
+        content: response,
+        cityCode: data.cityCode,
+      });
+
+      return { status: 'sent', response };
+    } catch (error) {
+      console.error('AI message error:', error);
+      client.emit('aiError', {
+        error: 'Failed to get AI response. Please try again.',
+      });
+      return { status: 'error' };
+    }
   }
 }

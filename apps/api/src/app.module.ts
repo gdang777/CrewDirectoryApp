@@ -15,6 +15,8 @@ import { AdminModule } from './modules/admin/admin.module';
 import { UsersModule } from './modules/users/users.module';
 import { PlacesModule } from './modules/places/places.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { AiModule } from './modules/ai/ai.module';
+import { RecommendationsModule } from './modules/recommendations/recommendations.module';
 
 @Module({
   imports: [
@@ -38,6 +40,8 @@ import { UploadModule } from './modules/upload/upload.module';
     PlacesModule,
     ChatModule,
     UploadModule,
+    AiModule,
+    RecommendationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

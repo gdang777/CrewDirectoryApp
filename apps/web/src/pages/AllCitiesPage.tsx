@@ -4,6 +4,7 @@ import { useCities } from '../hooks/useCities';
 import AddCityModal from '../components/AddCityModal';
 import Navbar from '../components/Navbar';
 import apiService from '../services/api';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './AllCitiesPage.css';
 
 // City images mapping
@@ -54,10 +55,7 @@ const AllCitiesPage = () => {
       {/* Content */}
       <main className="cities-main">
         {loading ? (
-          <div className="loading-state">
-            <div className="spinner"></div>
-            <p>Loading cities from database...</p>
-          </div>
+          <LoadingSpinner />
         ) : error ? (
           <div className="error-state">
             <p>❌ {error}</p>

@@ -9,6 +9,8 @@ import MapComponent from '../components/MapComponent';
 import CityChatList from '../components/CityChatList';
 import Navbar from '../components/Navbar';
 
+import ItineraryGeneratorModal from '../components/ItineraryGeneratorModal';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './CityPage.css';
 
 const categories: {
@@ -45,6 +47,7 @@ const CityPage = () => {
     PlaceCategory | 'guide' | 'chat'
   >('eat');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showItineraryModal, setShowItineraryModal] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   // Search and Filter state
@@ -120,11 +123,7 @@ const CityPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="city-page loading">
-        <div className="loading-spinner">Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!city) {
@@ -159,6 +158,28 @@ const CityPage = () => {
             <h1>{city.name}</h1>
             <p>{city.country}</p>
           </div>
+          <button
+            className="ai-itinerary-btn"
+            onClick={() => setShowItineraryModal(true)}
+            style={{
+              marginTop: '15px',
+              padding: '10px 20px',
+              borderRadius: '25px',
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              border: 'none',
+              color: 'white',
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              boxShadow: '0 4px 15px rgba(118, 75, 162, 0.4)',
+              transition: 'transform 0.2s',
+            }}
+          >
+            <span>✨</span> Plan My Layover
+          </button>
         </div>
       </header>
 
@@ -282,6 +303,14 @@ const CityPage = () => {
           cityId={city.id}
           onClose={() => setShowAddModal(false)}
           onSuccess={handlePlaceAdded}
+        />
+      )}
+
+      {showItineraryModal && (
+        <ItineraryGeneratorModal
+          cityCode={city.code}
+          cityName={city.name}
+          onClose={() => setShowItineraryModal(false)}
         />
       )}
     </div>

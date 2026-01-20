@@ -10,12 +10,22 @@ const ChatPage: React.FC = () => {
   const { roomId } = useParams<{ roomId: string }>();
   // const navigate = useNavigate();
   const { user } = useAuth();
-  const { joinRoom, activeRoom, messages, sendMessage, isConnected } =
-    useChat();
+  const {
+    joinRoom,
+    activeRoom,
+    messages,
+    sendMessage,
+    isConnected,
+    sendAIMessage,
+    aiMessages,
+    aiError,
+  } = useChat();
 
   const [inputValue, setInputValue] = useState('');
   const [roomDetails, setRoomDetails] = useState<ChatRoom | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [isAIMode, setIsAIMode] = useState(false);
+  const [currentCityCode, setCurrentCityCode] = useState<string>('');
 
   // Initial load and join
   useEffect(() => {
@@ -26,6 +36,11 @@ const ChatPage: React.FC = () => {
         // Fetch full room details (including participants)
         const roomData = await apiService.getRoom(roomId);
         setRoomDetails(roomData);
+
+        // Extract city code if it's a city room
+        if (roomData.type === 'CITY_GROUP' && roomData.metadata?.cityCode) {
+          setCurrentCityCode(roomData.metadata.cityCode);
+        }
 
         // Join via socket
         joinRoom(roomData);
@@ -49,7 +64,11 @@ const ChatPage: React.FC = () => {
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
     if (inputValue.trim()) {
-      sendMessage(inputValue);
+      if (isAIMode && currentCityCode) {
+        sendAIMessage(currentCityCode, inputValue);
+      } else {
+        sendMessage(inputValue);
+      }
       setInputValue('');
     }
   };
@@ -81,15 +100,15 @@ const ChatPage: React.FC = () => {
             {room?.participants?.map((p) => (
               <div key={p.id} className="participant-item">
                 <div className="participant-avatar">
-                  {p.user.firstName?.[0] || p.user.name[0]}
+                  {p.user?.firstName?.[0] || p.user?.name?.[0] || '?'}
                 </div>
                 <div className="participant-info">
                   <span className="participant-name">
-                    {p.user.firstName
+                    {p.user?.firstName
                       ? `${p.user.firstName} ${p.user.lastName || ''}`
-                      : p.user.name}
+                      : p.user?.name || 'Unknown'}
                   </span>
-                  {p.user.airlineId && (
+                  {p.user?.airlineId && (
                     <span className="participant-airline">
                       {p.user.airlineId}
                     </span>
@@ -110,50 +129,119 @@ const ChatPage: React.FC = () => {
             <span className="room-topic-badge">
               {room?.type === 'CITY_GROUP' ? 'City Chat' : 'Chat'}
             </span>
+            {/* AI Assistant Toggle - only show for city rooms */}
+            {room?.type === 'CITY_GROUP' && currentCityCode && (
+              <button
+                className={`ai-toggle-btn ${isAIMode ? 'active' : ''}`}
+                onClick={() => setIsAIMode(!isAIMode)}
+                title={
+                  isAIMode ? 'Switch to Human Chat' : 'Switch to AI Assistant'
+                }
+              >
+                {isAIMode ? (
+                  <>
+                    <span className="ai-icon">👤</span>
+                    <span>Human Chat</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="ai-icon">✨</span>
+                    <span>AI Assistant</span>
+                  </>
+                )}
+              </button>
+            )}
           </header>
 
           <div className="messages-container">
-            {messages.length === 0 ? (
-              <div className="empty-chat-placeholder">
-                <div className="placeholder-icon">💬</div>
-                <h3>Welcome to the chat!</h3>
-                <p>Start the conversation.</p>
-              </div>
-            ) : (
-              messages.map((msg) => {
-                const isMe = msg.senderId === user?.id;
-                return (
-                  <div
-                    key={msg.id}
-                    className={`chat-message-row ${isMe ? 'message-own' : 'message-other'}`}
-                  >
-                    {!isMe && (
-                      <div className="message-avatar">
-                        {msg.sender?.name?.[0] || '?'}
-                      </div>
-                    )}
-                    <div className="message-content-wrapper">
-                      {!isMe && (
+            {isAIMode ? (
+              // AI Mode - Show AI conversation
+              <>
+                {aiError && (
+                  <div className="ai-error-message">
+                    <span className="error-icon">⚠️</span>
+                    <span>{aiError}</span>
+                  </div>
+                )}
+                {aiMessages.length === 0 && !aiError ? (
+                  <div className="empty-chat-placeholder">
+                    <div className="placeholder-icon">✨</div>
+                    <h3>AI Travel Concierge</h3>
+                    <p>Ask me anything about {room?.name || 'this city'}!</p>
+                    <p className="ai-disclaimer">
+                      AI responses may not always be accurate
+                    </p>
+                  </div>
+                ) : (
+                  aiMessages.map((msg, idx) => (
+                    <div key={idx} className="chat-message-row message-other">
+                      <div className="message-avatar ai-avatar">✨</div>
+                      <div className="message-content-wrapper">
                         <div className="message-sender-name">
-                          {msg.sender?.name}
-                          {msg.sender?.airlineId && (
-                            <span className="msg-airline">
-                              {msg.sender.airlineId}
-                            </span>
-                          )}
+                          AI Travel Concierge
                         </div>
-                      )}
-                      <div className="message-bubble">{msg.content}</div>
-                      <div className="message-timestamp">
-                        {new Date(msg.createdAt).toLocaleTimeString([], {
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
+                        {msg.isTyping ? (
+                          <div className="message-bubble ai-typing">
+                            <span className="typing-dot"></span>
+                            <span className="typing-dot"></span>
+                            <span className="typing-dot"></span>
+                          </div>
+                        ) : (
+                          <div className="message-bubble ai-message">
+                            {msg.content}
+                          </div>
+                        )}
                       </div>
                     </div>
+                  ))
+                )}
+              </>
+            ) : (
+              // Regular Chat Mode
+              <>
+                {messages.length === 0 ? (
+                  <div className="empty-chat-placeholder">
+                    <div className="placeholder-icon">💬</div>
+                    <h3>Welcome to the chat!</h3>
+                    <p>Start the conversation.</p>
                   </div>
-                );
-              })
+                ) : (
+                  messages.map((msg) => {
+                    const isMe = msg.senderId === user?.id;
+                    return (
+                      <div
+                        key={msg.id}
+                        className={`chat-message-row ${isMe ? 'message-own' : 'message-other'}`}
+                      >
+                        {!isMe && (
+                          <div className="message-avatar">
+                            {msg.sender?.name?.[0] || '?'}
+                          </div>
+                        )}
+                        <div className="message-content-wrapper">
+                          {!isMe && (
+                            <div className="message-sender-name">
+                              {msg.sender?.name}
+                              {msg.sender?.airlineId && (
+                                <span className="msg-airline">
+                                  {msg.sender.airlineId}
+                                </span>
+                              )}
+                            </div>
+                          )}
+                          <div className="message-bubble">{msg.content}</div>
+                          <div className="message-timestamp">
+                            {new Date(msg.createdAt).toLocaleTimeString([], {
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })
+                )}
+              </>
             )}
             <div ref={messagesEndRef} />
           </div>
@@ -161,13 +249,15 @@ const ChatPage: React.FC = () => {
           <form className="chat-input-bar" onSubmit={handleSend}>
             <input
               type="text"
-              placeholder="Type a message..."
+              placeholder={
+                isAIMode ? 'Ask AI about this city...' : 'Type a message...'
+              }
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               autoFocus
             />
             <button type="submit" disabled={!inputValue.trim()}>
-              Send ✈️
+              {isAIMode ? 'Ask AI ✨' : 'Send ✈️'}
             </button>
           </form>
         </main>

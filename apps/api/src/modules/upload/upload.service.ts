@@ -5,7 +5,6 @@ import { randomUUID } from 'crypto';
 
 @Injectable()
 export class UploadService {
-  private supabase: SupabaseClient;
   private readonly bucketName = 'crew-lounge-images';
   private readonly maxFileSizeMB = 5;
   private readonly allowedMimeTypes = [
@@ -14,22 +13,34 @@ export class UploadService {
     'image/webp',
     'image/gif',
   ];
+  private supabase: SupabaseClient | null = null;
+  private isConfigured = false;
 
   constructor(private configService: ConfigService) {
     const supabaseUrl = this.getSupabaseUrl();
-    const supabaseKey = this.getSupabaseServiceKey();
+    const supabaseKey = this.configService.get<string>('SUPABASE_SERVICE_KEY');
 
     if (!supabaseUrl || !supabaseKey) {
       console.warn(
         'Supabase credentials not configured. Image uploads will fail.'
       );
+      this.isConfigured = false;
+      this.supabase = null;
+    } else {
+      try {
+        this.supabase = createClient(supabaseUrl, supabaseKey, {
+          auth: {
+            persistSession: false,
+          },
+        });
+        this.isConfigured = true;
+        console.log('Supabase Storage initialized successfully');
+      } catch (error) {
+        console.error('Failed to initialize Supabase client:', error);
+        this.isConfigured = false;
+        this.supabase = null;
+      }
     }
-
-    this.supabase = createClient(supabaseUrl || '', supabaseKey || '', {
-      auth: {
-        persistSession: false,
-      },
-    });
   }
 
   /**
@@ -51,14 +62,6 @@ export class UploadService {
 
     // Fallback: check for direct SUPABASE_URL env var
     return this.configService.get<string>('SUPABASE_URL') || '';
-  }
-
-  /**
-   * Get Supabase service role key
-   * This should be added to .env as SUPABASE_SERVICE_KEY
-   */
-  private getSupabaseServiceKey(): string {
-    return this.configService.get<string>('SUPABASE_SERVICE_KEY') || '';
   }
 
   /**
@@ -95,6 +98,12 @@ export class UploadService {
     file: Express.Multer.File,
     category: string
   ): Promise<string> {
+    if (!this.isConfigured || !this.supabase) {
+      throw new BadRequestException(
+        'Image upload is not configured. Please contact your administrator.'
+      );
+    }
+
     this.validateImage(file);
 
     // Generate unique filename
@@ -137,6 +146,12 @@ export class UploadService {
    * @param imageUrl - Full URL of the image to delete
    */
   async deleteImage(imageUrl: string): Promise<void> {
+    if (!this.isConfigured || !this.supabase) {
+      throw new BadRequestException(
+        'Image delete is not configured. Please contact your administrator.'
+      );
+    }
+
     if (!imageUrl || !imageUrl.includes(this.bucketName)) {
       // Not a Supabase Storage URL, skip deletion
       return;

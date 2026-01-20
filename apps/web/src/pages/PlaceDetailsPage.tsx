@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useChat } from '../context/ChatContext';
 import apiService, { Place, PlaceComment } from '../services/api';
 import StarRating from '../components/StarRating';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './PlaceDetailsPage.css';
 import { mockPlaces } from '../data/mockData';
 
@@ -149,11 +150,7 @@ const PlaceDetailsPage = () => {
   };
 
   if (loading) {
-    return (
-      <div className="place-details-page loading-state">
-        <div className="loading-spinner">Loading...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   if (error || !place) {

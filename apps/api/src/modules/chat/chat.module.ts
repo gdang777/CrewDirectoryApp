@@ -8,6 +8,7 @@ import { ChatMessage } from './entities/chat-message.entity';
 import { User } from '../playbooks/entities/user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { AiModule } from '../ai/ai.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       }),
       inject: [ConfigService],
     }),
+    AiModule, // Import AI module for AI chat features
   ],
   controllers: [ChatController],
   providers: [ChatGateway, ChatService],

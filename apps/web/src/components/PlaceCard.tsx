@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Place } from '../services/api';
+import { Place, apiService, InteractionType } from '../services/api';
 import StarRating from './StarRating';
 import './PlaceCard.css';
 
@@ -19,8 +19,16 @@ const PlaceCard = ({ place, onVote }: PlaceCardProps) => {
   const score = place.upvotes - place.downvotes;
   const rating = Number(place.rating) || 0;
 
+  const handleClick = () => {
+    apiService.trackInteraction(place.id, InteractionType.CLICK);
+  };
+
   return (
-    <Link to={`/place/${place.id}`} className="place-card-link">
+    <Link
+      to={`/place/${place.id}`}
+      className="place-card-link"
+      onClick={handleClick}
+    >
       <div className="place-card">
         <div
           className="place-image"

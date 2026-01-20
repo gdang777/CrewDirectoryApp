@@ -19,10 +19,13 @@ interface ChatContextType {
   joinDMRoom: (otherUserId: string) => void;
   joinRoom: (room: ChatRoom) => void;
   sendMessage: (content: string) => void;
+  sendAIMessage: (cityCode: string, message: string) => void;
   leaveRoom: () => void;
   isChatOpen: boolean;
   toggleChat: () => void;
   unreadCount: number;
+  aiMessages: Array<{ content: string; isTyping?: boolean }>;
+  aiError: string | null;
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined);
@@ -37,6 +40,10 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [unreadCount] = useState(0);
+  const [aiMessages, setAiMessages] = useState<
+    Array<{ content: string; isTyping?: boolean }>
+  >([]);
+  const [aiError, setAiError] = useState<string | null>(null);
 
   // Initialize Socket
   useEffect(() => {
@@ -80,6 +87,25 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
 
     socketInstance.on('error', (error: any) => {
       console.error('ChatContext: Socket error:', error);
+    });
+
+    // AI-specific event listeners
+    socketInstance.on(
+      'aiResponse',
+      (data: { content: string; cityCode: string }) => {
+        console.log('ChatContext: AI response received');
+        setAiMessages((prev) => [
+          ...prev,
+          { content: data.content, isTyping: false },
+        ]);
+        setAiError(null);
+      }
+    );
+
+    socketInstance.on('aiError', (data: { error: string }) => {
+      console.error('ChatContext: AI error:', data.error);
+      setAiError(data.error);
+      setAiMessages((prev) => prev.filter((msg) => !msg.isTyping));
     });
 
     setSocket(socketInstance);
@@ -173,6 +199,18 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     [socket, activeRoom]
   );
 
+  const sendAIMessage = useCallback(
+    (cityCode: string, message: string) => {
+      if (socket) {
+        // Add typing indicator
+        setAiMessages((prev) => [...prev, { content: '', isTyping: true }]);
+        setAiError(null);
+        socket.emit('sendAIMessage', { cityCode, message });
+      }
+    },
+    [socket]
+  );
+
   const leaveRoom = useCallback(() => {
     setActiveRoom(null);
     setMessages([]);
@@ -192,10 +230,13 @@ export const ChatProvider: React.FC<{ children: ReactNode }> = ({
     joinDMRoom,
     joinRoom,
     sendMessage,
+    sendAIMessage,
     leaveRoom,
     isChatOpen,
     toggleChat,
     unreadCount,
+    aiMessages,
+    aiError,
   };
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;

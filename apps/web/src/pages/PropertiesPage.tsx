@@ -1,14 +1,19 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { mockProperties, Property, PropertyType } from '../data/mockData';
 import PropertyCard from '../components/PropertyCard';
 import AddPropertyModal from '../components/AddPropertyModal';
 import './PropertiesPage.css';
 
 const PropertiesPage = () => {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
   const [activeTab, setActiveTab] = useState<PropertyType>('crashpad');
   const [searchTerm, setSearchTerm] = useState('');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showSignInPrompt, setShowSignInPrompt] = useState(false);
   const [properties, setProperties] = useState<Property[]>(mockProperties);
 
   const filteredProperties = properties.filter(
@@ -18,6 +23,14 @@ const PropertiesPage = () => {
         p.location.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.airportCode.toLowerCase().includes(searchTerm.toLowerCase()))
   );
+
+  const handleAddClick = () => {
+    if (!isAuthenticated) {
+      setShowSignInPrompt(true);
+      return;
+    }
+    setShowAddModal(true);
+  };
 
   const handleAddProperty = (
     newProperty: Omit<Property, 'id' | 'rating' | 'reviewCount' | 'isFavorite'>
@@ -89,10 +102,7 @@ const PropertiesPage = () => {
 
           <div className="filter-actions">
             <button className="filter-btn">📍 Near Me</button>
-            <button
-              className="add-property-btn"
-              onClick={() => setShowAddModal(true)}
-            >
+            <button className="add-property-btn" onClick={handleAddClick}>
               + Add Property
             </button>
             <button className="filter-btn">⚙️ Filters</button>
@@ -121,7 +131,7 @@ const PropertiesPage = () => {
           {filteredProperties.length === 0 ? (
             <div className="empty-state">
               <p>No properties found matching your search.</p>
-              <button onClick={() => setShowAddModal(true)}>
+              <button onClick={handleAddClick}>
                 Be the first to list one!
               </button>
             </div>
@@ -145,6 +155,34 @@ const PropertiesPage = () => {
           onClose={() => setShowAddModal(false)}
           onSave={handleAddProperty}
         />
+      )}
+
+      {/* Sign-In Required Prompt */}
+      {showSignInPrompt && (
+        <div className="sign-in-prompt-overlay">
+          <div className="sign-in-prompt-modal">
+            <div className="prompt-icon">🔐</div>
+            <h2>Sign In Required</h2>
+            <p>You need to be signed in to add a property listing.</p>
+            <div className="prompt-actions">
+              <button
+                className="prompt-btn primary"
+                onClick={() => {
+                  setShowSignInPrompt(false);
+                  navigate('/auth');
+                }}
+              >
+                Sign In
+              </button>
+              <button
+                className="prompt-btn secondary"
+                onClick={() => setShowSignInPrompt(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

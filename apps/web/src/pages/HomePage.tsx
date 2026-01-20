@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { mockCities, mockPlaces } from '../data/mockData';
+import RecommendationsSection from '../components/home/RecommendationsSection';
 import './HomePage.css';
 
 const HomePage = () => {
@@ -23,7 +24,6 @@ const HomePage = () => {
     <div className="home-page">
       {/* Navigation */}
       <Navbar transparent />
-
       {/* Hero Section */}
       <header className="hero-section">
         <div className="hero-bg"></div>
@@ -69,7 +69,9 @@ const HomePage = () => {
           </div>
         </div>
       </header>
-
+      {/* Recommendations Section */}
+      <RecommendationsSection cityCode="LHR" />{' '}
+      {/* Default to LHR for demo, or based on user location */}
       {/* Popular Layover Cities */}
       <section id="cities" className="section cities-section">
         <div className="section-container">
@@ -108,7 +110,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
       {/* Featured Listings */}
       <section id="featured" className="section featured-section">
         <div className="section-container">
@@ -150,7 +151,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
       {/* Features Section (Designed Specifically) */}
       <section id="features" className="section features-section">
         <div className="features-bg-gradient"></div>
@@ -186,7 +186,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
       <section className="section stats-section">
         <div className="section-container">
           <div className="stats-grid">
@@ -209,7 +208,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
       {/* CTA Section */}
       <section className="cta-section-bottom">
         <div className="section-container">
@@ -222,7 +220,6 @@ const HomePage = () => {
           </div>
         </div>
       </section>
-
       {/* Footer */}
       <footer className="main-footer">
         <div className="section-container">

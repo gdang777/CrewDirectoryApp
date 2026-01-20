@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { apiService, Product, PriceComparison } from '../services/api';
 import { useCities } from '../hooks/useCities';
 import ProductCard from '../components/ProductCard';
+import LoadingSpinner from '../components/LoadingSpinner';
 import './ProductsPage.css';
 
 const ProductsPage = () => {
@@ -64,11 +65,7 @@ const ProductsPage = () => {
   };
 
   if (citiesLoading) {
-    return (
-      <div className="products-page loading">
-        <div className="loading-spinner">Loading cities...</div>
-      </div>
-    );
+    return <LoadingSpinner />;
   }
 
   return (
@@ -118,7 +115,7 @@ const ProductsPage = () => {
 
       <div className="products-content">
         {loading ? (
-          <div className="loading-spinner">Finding best deals...</div>
+          <LoadingSpinner />
         ) : error ? (
           <div className="error-message">{error}</div>
         ) : products.length === 0 ? (

@@ -158,6 +158,13 @@ export interface VoteResult {
 }
 
 // Products
+export enum InteractionType {
+  VIEW = 'view',
+  CLICK = 'click',
+  SAVE = 'save',
+  SHARE = 'share',
+}
+
 export interface Price {
   id: string;
   amount: number;
@@ -668,6 +675,35 @@ class ApiService {
       method: 'POST',
       body: JSON.stringify({ cityCode, name }),
     });
+  }
+
+  // AI Itinerary
+  async generateItinerary(data: {
+    cityCode: string;
+    duration: number;
+    preferences: string[];
+    currentLocation?: { latitude: number; longitude: number };
+  }): Promise<any> {
+    return this.request<any>('/ai/itinerary/generate', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Recommendations
+  async trackInteraction(
+    placeId: string,
+    type: InteractionType
+  ): Promise<void> {
+    // Fire and forget (don't await) unless debugging
+    this.request('/ai/recommendations/interaction', {
+      method: 'POST',
+      body: JSON.stringify({ placeId, type }),
+    }).catch(console.error);
+  }
+
+  async getRecommendations(cityCode: string): Promise<Place[]> {
+    return this.request<Place[]>(`/ai/recommendations?cityCode=${cityCode}`);
   }
 }
 

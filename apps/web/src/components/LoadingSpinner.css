@@ -1,31 +1,125 @@
-.loading-spinner-container {
+.airplane-loader-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 20, 0.85);
+  /* Dark transparent background */
+  backdrop-filter: blur(5px);
+  z-index: 9999;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 3rem;
-  gap: 1rem;
 }
 
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #2196f3;
+.airplane-loader-container {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Central glowing dot (Earth/Destination) */
+.earth-dot {
+  width: 20px;
+  height: 20px;
+  background: #00f0ff;
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  box-shadow: 0 0 20px #00f0ff, 0 0 40px #00f0ff;
+  animation: pulse 2s infinite ease-in-out;
+  z-index: 2;
 }
 
-@keyframes spin {
+/* Faint orbit path ring */
+.orbit-path {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  z-index: 1;
+}
+
+/* The Airplane */
+.airplane-icon {
+  position: absolute;
+  font-size: 2rem;
+  top: 0;
+  left: 50%;
+  margin-left: -1rem;
+  /* Center visually */
+  transform-origin: 50% 60px;
+  /* Orbit radius matches container height/2 */
+  animation: orbit 2s linear infinite;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+  filter: drop-shadow(0 0 5px #00f0ff);
+}
+
+.loading-text {
+  margin-top: 2rem;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  animation: fadeText 1.5s infinite alternate;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+}
+
+@keyframes orbit {
   0% {
-    transform: rotate(0deg);
+    transform: rotate(0deg) translate(0, -60px) rotate(90deg);
+    /* Adjust orientation */
   }
+
   100% {
-    transform: rotate(360deg);
+    transform: rotate(360deg) translate(0, -60px) rotate(90deg);
   }
 }
 
-.loading-spinner-container p {
-  color: #666;
-  font-size: 0.875rem;
+/* Wait, transform-origin approach above rotates the element itself. 
+   Better approach for upright plane: 
+   Rotate the container, or use complex keyframes.
+   Let's use a simpler orbit:
+   Rotate the container holding the plane, but counter-rotate the plane if we want it to face forward.
+   Actually, for a plane, we WANT it to bank/turn.
+*/
+
+@keyframes orbit {
+  from {
+    transform: rotate(0deg) translateY(-60px) rotate(90deg);
+    /* Facing tangent */
+  }
+
+  to {
+    transform: rotate(360deg) translateY(-60px) rotate(90deg);
+  }
+}
+
+@keyframes pulse {
+
+  0%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+
+  50% {
+    transform: scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeText {
+  from {
+    opacity: 0.4;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
