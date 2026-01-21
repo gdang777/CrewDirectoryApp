@@ -39,11 +39,29 @@ const AuthPage = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [validationErrors, setValidationErrors] = useState<
+    Record<string, string>
+  >({});
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setValidationErrors({});
     setError(null);
+
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    if (!loginData.email.trim()) {
+      errors.email = 'Email is required';
+    }
+    if (!loginData.password) {
+      errors.password = 'Password is required';
+    }
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setLoading(true);
 
     try {
       await login({
@@ -65,8 +83,31 @@ const AuthPage = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setValidationErrors({});
     setError(null);
+
+    // Client-side validation
+    const errors: Record<string, string> = {};
+    if (!signupData.firstName.trim()) {
+      errors.firstName = 'First name is required';
+    }
+    if (!signupData.lastName.trim()) {
+      errors.lastName = 'Last name is required';
+    }
+    if (!signupData.email.trim()) {
+      errors.email = 'Email is required';
+    }
+    if (!signupData.password) {
+      errors.password = 'Password is required';
+    } else if (signupData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    setLoading(true);
 
     try {
       await signup({
@@ -95,13 +136,13 @@ const AuthPage = () => {
       <nav className="auth-nav">
         <div className="nav-container">
           <Link to="/" className="nav-logo">
-            Crew Lounge
+            ✈️ Crew Lounge
           </Link>
           <div className="nav-links">
             <Link to="/">🏠 Home</Link>
-            <Link to="/">✈️ Layovers</Link>
+            <Link to="/cities">✈️ Layovers</Link>
             <Link to="/properties">🏠 Properties</Link>
-            <a href="#">💼 Gigs</a>
+            <Link to="/cities">💼 Gigs</Link>
           </div>
           <Link to="/auth" className="nav-cta">
             Sign In
@@ -159,8 +200,10 @@ const AuthPage = () => {
                   onChange={(e) =>
                     setLoginData((prev) => ({ ...prev, email: e.target.value }))
                   }
-                  required
                 />
+                {validationErrors.email && (
+                  <span className="field-error">{validationErrors.email}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -175,8 +218,12 @@ const AuthPage = () => {
                       password: e.target.value,
                     }))
                   }
-                  required
                 />
+                {validationErrors.password && (
+                  <span className="field-error">
+                    {validationErrors.password}
+                  </span>
+                )}
               </div>
 
               <button type="submit" className="auth-submit" disabled={loading}>
@@ -206,8 +253,12 @@ const AuthPage = () => {
                         firstName: e.target.value,
                       }))
                     }
-                    required
                   />
+                  {validationErrors.firstName && (
+                    <span className="field-error">
+                      {validationErrors.firstName}
+                    </span>
+                  )}
                 </div>
                 <div className="form-group">
                   <label>Last Name</label>
@@ -221,8 +272,12 @@ const AuthPage = () => {
                         lastName: e.target.value,
                       }))
                     }
-                    required
                   />
+                  {validationErrors.lastName && (
+                    <span className="field-error">
+                      {validationErrors.lastName}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -238,8 +293,10 @@ const AuthPage = () => {
                       email: e.target.value,
                     }))
                   }
-                  required
                 />
+                {validationErrors.email && (
+                  <span className="field-error">{validationErrors.email}</span>
+                )}
               </div>
 
               <div className="form-group">
@@ -254,9 +311,12 @@ const AuthPage = () => {
                       password: e.target.value,
                     }))
                   }
-                  required
-                  minLength={6}
                 />
+                {validationErrors.password && (
+                  <span className="field-error">
+                    {validationErrors.password}
+                  </span>
+                )}
                 <small className="form-hint">Minimum 6 characters</small>
               </div>
 

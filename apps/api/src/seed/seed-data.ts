@@ -460,6 +460,117 @@ export async function seedDatabase() {
       }
     }
 
+    // Seed Sample Gigs
+    const gigsData = [
+      {
+        title: 'Barista Needed for Weekend Shifts',
+        description:
+          'Busy coffee shop near the airport looking for experienced barista. Must know espresso drinks and latte art. Flexible 4-6 hour shifts available Saturday and Sunday.',
+        category: 'hospitality',
+        cityCode: 'CPH',
+        payRate: 22.5,
+        payType: 'hourly',
+        duration: '4-6 hours per shift',
+        requirements:
+          'Previous barista experience required. Must speak English.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=800&h=600&fit=crop',
+      },
+      {
+        title: 'Event Staff for Aviation Conference',
+        description:
+          'Looking for friendly professionals to help with registration and attendee management at a 2-day aviation industry conference. Great networking opportunity!',
+        category: 'events',
+        cityCode: 'DXB',
+        payRate: 300.0,
+        payType: 'daily',
+        duration: '2 days',
+        requirements:
+          'Professional appearance, excellent communication skills. Aviation industry knowledge a plus.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800&h=600&fit=crop',
+      },
+      {
+        title: 'Retail Associate - Duty Free Shop',
+        description:
+          'Terminal duty free shop needs temporary retail associates for holiday rush. Help travelers find gifts and process transactions. Employee discount included!',
+        category: 'retail',
+        cityCode: 'LHR',
+        payRate: 18.0,
+        payType: 'hourly',
+        duration: '3-8 hour shifts',
+        requirements:
+          'Retail experience preferred. Must be reliable and customer-focused.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&h=600&fit=crop',
+      },
+      {
+        title: 'Airport Shuttle Driver',
+        description:
+          'Licensed driver needed to shuttle crew between airport and hotel. Early morning and late evening shifts available. Clean driving record required.',
+        category: 'services',
+        cityCode: 'JFK',
+        payRate: 25.0,
+        payType: 'hourly',
+        duration: 'Flexible',
+        requirements:
+          'Valid US driver license, clean record, airport knowledge helpful.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?w=800&h=600&fit=crop',
+      },
+      {
+        title: 'Restaurant Server - Upscale Dining',
+        description:
+          'Fine dining restaurant in city center seeks experienced servers for dinner service. High earning potential with tips. Perfect for crew with evening layovers.',
+        category: 'hospitality',
+        cityCode: 'BKK',
+        payRate: 15.0,
+        payType: 'hourly',
+        duration: '4-6 hours (dinner service)',
+        requirements:
+          'Fine dining experience required. Ability to work 6pm-11pm shifts.',
+        imageUrl:
+          'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&h=600&fit=crop',
+      },
+    ];
+
+    // Get admin user for posting gigs
+    const gigPoster = await userRepository.findOne({
+      where: { email: adminEmail },
+    });
+
+    if (gigPoster) {
+      const { Gig } = await import('../modules/gigs/entities/gig.entity');
+      const gigRepository = connection.getRepository(Gig);
+
+      for (const gigData of gigsData) {
+        const cityId = cityMap[gigData.cityCode];
+        if (!cityId) continue;
+
+        const existing = await gigRepository.findOne({
+          where: { title: gigData.title, cityId },
+        });
+
+        if (!existing) {
+          const gig = gigRepository.create({
+            title: gigData.title,
+            description: gigData.description,
+            category: gigData.category as any, // Type assertion for enum
+            cityId,
+            payRate: gigData.payRate,
+            payType: gigData.payType as any,
+            duration: gigData.duration,
+            requirements: gigData.requirements,
+            imageUrl: gigData.imageUrl,
+            postedById: gigPoster.id,
+            status: 'active' as any,
+          });
+          await gigRepository.save(gig);
+          console.log(`✓ Seeded gig: ${gigData.title} in ${gigData.cityCode}`);
+        }
+      }
+    }
+
     console.log('✅ Database seeding completed!');
   } catch (error) {
     console.error('❌ Error seeding database:', error);

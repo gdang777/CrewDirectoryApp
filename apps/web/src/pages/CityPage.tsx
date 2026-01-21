@@ -48,6 +48,7 @@ const CityPage = () => {
   >('eat');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showItineraryModal, setShowItineraryModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
   const [viewMode, setViewMode] = useState<'list' | 'map'>('list');
 
   // Search and Filter state
@@ -89,9 +90,7 @@ const CityPage = () => {
 
   const handleAddClick = () => {
     if (!isAuthenticated) {
-      if (confirm('You need to be signed in to add a place. Go to login?')) {
-        navigate('/auth');
-      }
+      setShowSignInModal(true);
       return;
     }
     setShowAddModal(true);
@@ -312,6 +311,98 @@ const CityPage = () => {
           cityName={city.name}
           onClose={() => setShowItineraryModal(false)}
         />
+      )}
+
+      {/* Sign-in Required Modal */}
+      {showSignInModal && (
+        <div
+          className="modal-overlay"
+          onClick={() => setShowSignInModal(false)}
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0, 0, 0, 0.7)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 9999,
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <div
+            className="signin-modal"
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+              borderRadius: '20px',
+              padding: '40px',
+              maxWidth: '400px',
+              width: '90%',
+              textAlign: 'center',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              boxShadow: '0 20px 60px rgba(0, 0, 0, 0.5)',
+            }}
+          >
+            <div style={{ fontSize: '48px', marginBottom: '20px' }}>🔐</div>
+            <h2
+              style={{
+                color: '#fff',
+                marginBottom: '12px',
+                fontSize: '1.5rem',
+              }}
+            >
+              Sign In Required
+            </h2>
+            <p
+              style={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                marginBottom: '30px',
+                lineHeight: 1.6,
+              }}
+            >
+              You need to be signed in to add a place. Join our crew community
+              to share your favorite spots!
+            </p>
+            <div
+              style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}
+            >
+              <button
+                onClick={() => setShowSignInModal(false)}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: '10px',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  background: 'transparent',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  transition: 'all 0.2s',
+                }}
+              >
+                Maybe Later
+              </button>
+              <button
+                onClick={() => navigate('/auth')}
+                style={{
+                  padding: '12px 24px',
+                  borderRadius: '10px',
+                  border: 'none',
+                  background: 'linear-gradient(135deg, #00c6ff, #0072ff)',
+                  color: '#fff',
+                  cursor: 'pointer',
+                  fontSize: '0.95rem',
+                  fontWeight: 600,
+                  transition: 'all 0.2s',
+                }}
+              >
+                Sign In
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

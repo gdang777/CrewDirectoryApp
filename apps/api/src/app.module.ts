@@ -17,6 +17,7 @@ import { PlacesModule } from './modules/places/places.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { AiModule } from './modules/ai/ai.module';
 import { RecommendationsModule } from './modules/recommendations/recommendations.module';
+import { GigsModule } from './modules/gigs/gigs.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { RecommendationsModule } from './modules/recommendations/recommendations
     UploadModule,
     AiModule,
     RecommendationsModule,
+    GigsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

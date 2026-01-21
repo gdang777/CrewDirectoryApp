@@ -1,0 +1,361 @@
+/* ========================================
+   GIGS PAGE STYLES
+   ======================================== */
+
+.gigs-page {
+    min-height: 100vh;
+    background: #0f0f1a;
+    color: white;
+}
+
+/* Navigation */
+.main-nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    background: rgba(15, 15, 26, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.nav-logo {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: #a0a0a0;
+    text-decoration: none;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+    color: #00d9ff;
+}
+
+.nav-cta {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+    padding: 0.6rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.nav-cta:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+}
+
+/* Page Header */
+.page-header {
+    padding: 4rem 2rem 3rem;
+    background: #0a0a14;
+}
+
+.header-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+}
+
+.page-header p {
+    color: #888;
+    font-size: 1.1rem;
+}
+
+/* Filters Section */
+.filters-section {
+    padding: 1.5rem 2rem;
+    background: #0f0f1a;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.filters-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.search-bar {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    flex: 1;
+    max-width: 400px;
+}
+
+.search-icon {
+    margin-right: 0.75rem;
+    opacity: 0.5;
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 0.95rem;
+    outline: none;
+    width: 100%;
+}
+
+.search-bar input::placeholder {
+    color: #666;
+}
+
+.add-gig-btn {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+}
+
+.add-gig-btn:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.3);
+}
+
+/* Category Tabs */
+.category-tabs {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.category-tab {
+    padding: 0.6rem 1.25rem;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50px;
+    color: #888;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+}
+
+.category-tab:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.category-tab.active {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    border-color: transparent;
+    color: #0f0f1a;
+    font-weight: 600;
+}
+
+/* Gigs Section */
+.gigs-section {
+    padding: 2rem;
+}
+
+.gigs-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.gigs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #666;
+}
+
+.empty-state p {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.empty-state button {
+    margin-top: 1rem;
+    background: rgba(0, 217, 255, 0.1);
+    border: 1px solid #00d9ff;
+    color: #00d9ff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.empty-state button:hover {
+    background: rgba(0, 217, 255, 0.2);
+    transform: scale(1.05);
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .gigs-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .filters-container {
+        flex-wrap: wrap;
+    }
+
+    .search-bar {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .gigs-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .category-tabs {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+        padding-bottom: 0.5rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Sign-In Prompt Modal */
+.sign-in-prompt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sign-in-prompt-modal {
+    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 16px;
+    padding: 3rem;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(0, 217, 255, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.prompt-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.sign-in-prompt-modal h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+    color: #fff;
+}
+
+.sign-in-prompt-modal p {
+    color: #888;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.prompt-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.prompt-btn {
+    padding: 0.875rem 2rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.prompt-btn.primary {
+    background: linear-gradient(135deg, #00d9ff, #00ff88);
+    color: #0f0f1a;
+    border: none;
+}
+
+.prompt-btn.primary:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0, 217, 255, 0.4);
+}
+
+.prompt-btn.secondary {
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #888;
+}
+
+.prompt-btn.secondary:hover {
+    border-color: rgba(255, 255, 255, 0.4);
+    color: #fff;
+}

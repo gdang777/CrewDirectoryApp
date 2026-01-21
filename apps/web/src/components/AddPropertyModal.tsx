@@ -1,5 +1,6 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { Property, PropertyType } from '../data/mockData';
+import ImageUpload from './ImageUpload';
 import './AddPropertyModal.css';
 
 interface AddPropertyModalProps {
@@ -36,18 +37,10 @@ const AddPropertyModal = ({ onClose, onSave }: AddPropertyModalProps) => {
     ownerAirline: '',
   });
 
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleImageUpload = (url: string) => {
+    setImageUrl(url);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -66,7 +59,7 @@ const AddPropertyModal = ({ onClose, onSave }: AddPropertyModalProps) => {
     onSave({
       ...formData,
       imageUrl:
-        imagePreview ||
+        imageUrl ||
         'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=400&h=300&fit=crop',
     });
   };
@@ -84,26 +77,11 @@ const AddPropertyModal = ({ onClose, onSave }: AddPropertyModalProps) => {
         <form onSubmit={handleSubmit}>
           {/* Image Upload */}
           <div className="image-upload-section">
-            <div
-              className="image-preview"
-              onClick={() => fileInputRef.current?.click()}
-              style={
-                imagePreview ? { backgroundImage: `url(${imagePreview})` } : {}
-              }
-            >
-              {!imagePreview && (
-                <div className="upload-placeholder">
-                  <span className="upload-icon">📷</span>
-                  <span>Click to upload photos</span>
-                </div>
-              )}
-            </div>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleImageChange}
-              accept="image/*"
-              hidden
+            <ImageUpload
+              onUpload={handleImageUpload}
+              category="properties"
+              currentImage={imageUrl}
+              label="Property Photos"
             />
           </div>
 

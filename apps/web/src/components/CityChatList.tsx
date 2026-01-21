@@ -17,6 +17,7 @@ const CityChatList: React.FC<CityChatListProps> = ({ cityCode }) => {
   const [rooms, setRooms] = useState<ChatRoom[]>([]);
   const [loading, setLoading] = useState(true);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [showSignInModal, setShowSignInModal] = useState(false);
   const [newRoomName, setNewRoomName] = useState('');
   const [creating, setCreating] = useState(false);
 
@@ -37,7 +38,10 @@ const CityChatList: React.FC<CityChatListProps> = ({ cityCode }) => {
   };
 
   const handleJoin = (room: ChatRoom) => {
-    if (!isAuthenticated) return;
+    if (!isAuthenticated) {
+      setShowSignInModal(true);
+      return;
+    }
     // Navigate to full chat page
     navigate(`/chat/${room.id}`);
     // Optionally join socket here too for speed, but page will do it
@@ -104,7 +108,6 @@ const CityChatList: React.FC<CityChatListProps> = ({ cityCode }) => {
               <button
                 className={`join-btn ${activeRoom?.id === room.id && isChatOpen ? 'active' : ''}`}
                 onClick={() => handleJoin(room)}
-                disabled={!isAuthenticated}
               >
                 {activeRoom?.id === room.id && isChatOpen ? 'Active' : 'Join'}
               </button>
@@ -137,6 +140,27 @@ const CityChatList: React.FC<CityChatListProps> = ({ cityCode }) => {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Sign-In Modal */}
+      {showSignInModal && (
+        <div className="modal-overlay">
+          <div className="modal-content sign-in-modal">
+            <div className="sign-in-icon">🔐</div>
+            <h3>Sign In Required</h3>
+            <p>
+              You need to be signed in to join chat rooms. Join our crew
+              community to connect with other aviation professionals!
+            </p>
+            <div className="modal-actions">
+              <button onClick={() => setShowSignInModal(false)}>
+                Maybe Later
+              </button>
+              <button onClick={() => navigate('/auth')} className="sign-in-btn">
+                Sign In
+              </button>
+            </div>
           </div>
         </div>
       )}

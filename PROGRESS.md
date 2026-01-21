@@ -1,13 +1,13 @@
 # Crew Lounge - Development Progress
 
-> **Last Updated:** 2026-01-19  
+> **Last Updated:** 2026-01-21  
 > **Status:** Active Development
 
 ---
 
 ## 📋 Project Overview
 
-**Crew Lounge** is a city-centric, user-generated directory for aviation professionals. It enables crew members to discover and contribute places (eat, drink, shop, visit) and properties (crashpads, vacation rentals) in various layover cities.
+**Crew Lounge** is a city-centric, user-generated directory for aviation professionals. It enables crew members to discover and contribute places (eat, drink, shop, visit), properties (crashpads, vacation rentals), and gigs (temporary work opportunities) in various layover cities.
 
 ---
 
@@ -131,6 +131,50 @@
 - [x] **Pagination-Ready** - limit/offset parameters for infinite scroll
 - [x] **Glassmorphic UI** - Matches existing dark/neon design aesthetic
 
+### 13. Layovers/Gigs Feature ✨ NEW
+
+- [x] **Backend Implementation**
+  - `Gig` entity with title, description, category, city, pay rate/type, duration, requirements, status, image URL, and poster information
+  - `GigApplication` entity tracking user applications with message and status (pending, accepted, rejected)
+  - `GigsService` with comprehensive CRUD operations, filtering, sorting, and application management
+  - `GigsController` with RESTful API endpoints for all gig operations
+  - Database migration for `gigs` and `gig_applications` tables with foreign keys and indexes
+  - DTOs with `class-validator` for robust input validation
+  - JWT-protected endpoints for creating, updating, and applying to gigs
+  - Ownership checks ensuring users can only modify their own gigs
+- [x] **Frontend Implementation**
+  - `GigCard` component displaying gig summaries with category icons and glassmorphic styling
+  - `AddGigModal` for posting new gig listings with comprehensive form fields
+  - `ApplyGigModal` for submitting job applications with optional message
+  - `GigsPage` with category filtering, search bar, and grid layout
+  - `GigDetailsPage` with comprehensive gig information and apply functionality
+  - API service integration for all gig-related operations
+  - Routing configured for `/gigs` and `/gigs/:gigId`
+- [x] **Special Features**
+  - Canadian cities filter - City dropdown restricted to Canadian cities only
+  - Contact poster button - Navigate to chat with gig poster from details page
+  - Redesigned details page matching provided reference image
+  - Dark/neon glassmorphic theme consistent across all components
+  - 5 mock gigs seeded across different Canadian cities
+- [x] **Bug Fixes**
+  - Fixed navbar Gigs link to point to correct route
+  - Fixed unclickable "View Details" button on GigCard (CSS pointer-events issue)
+  - Fixed TypeScript compilation errors in seed script
+
+**API Endpoints:**
+
+| Endpoint                        | Method | Description                                       |
+| ------------------------------- | ------ | ------------------------------------------------- |
+| `/gigs`                         | GET    | List gigs with filtering and sorting              |
+| `/gigs/:id`                     | GET    | Get single gig with applications                  |
+| `/gigs`                         | POST   | Create new gig (JWT protected)                    |
+| `/gigs/:id`                     | PATCH  | Update gig (JWT protected, owner/admin only)      |
+| `/gigs/:id`                     | DELETE | Delete gig (JWT protected, owner/admin only)      |
+| `/gigs/:id/apply`               | POST   | Apply to gig (JWT protected)                      |
+| `/gigs/applications/me`         | GET    | Get user's applications (JWT protected)           |
+| `/gigs/:id/applications`        | GET    | Get gig applications (JWT protected, poster only) |
+| `/gigs/applications/:id/status` | PATCH  | Update application status (JWT protected)         |
+
 ---
 
 ## 🔄 In Progress
@@ -143,13 +187,10 @@ _No features currently in progress_
 
 ### High Priority
 
-- [ ] **Extend Image Upload** - Add to cities, properties, user avatars
-- [ ] **Global Search** - Search bar in navbar across all content
-- [ ] **Search Autocomplete** - Suggestions as you type
+- [ ] **Search Autocomplete** - Suggestions as you type (enhanced version)
 
 ### Medium Priority
 
-- [ ] **Layovers/Gigs Feature** - Work opportunities for crew
 - [ ] **Advanced Filters** - Distance filter with geolocation, price range
 - [ ] **Moderator Dashboard** - Content moderation queue
 
@@ -163,15 +204,77 @@ _No features currently in progress_
 
 ## 🐛 Known Issues
 
-| Issue                           | Status | Notes                           |
-| ------------------------------- | ------ | ------------------------------- |
-| Mock data used for places       | Open   | Places not yet connected to API |
-| Comments only in frontend state | Open   | Need backend endpoint           |
-| Votes only in frontend state    | Open   | Need backend endpoint           |
+| Issue                                      | Priority | Status | Notes                                                 |
+| ------------------------------------------ | -------- | ------ | ----------------------------------------------------- |
+| Homepage search suggestions don't navigate | High     | Fixed  | Added click handlers with `useNavigate`               |
+| Gigs navbar link broken                    | High     | Fixed  | Changed to React Router `Link` to `/cities`           |
+| Chat Join button unresponsive              | Medium   | Fixed  | Added sign-in modal for unauthenticated users         |
+| Auth form validation missing               | Medium   | Fixed  | Added client-side validation with inline errors       |
+| Logo emoji inconsistency                   | Low      | Fixed  | Added ✈️ to AuthPage navbar                           |
+| Property details map placeholder           | Low      | Open   | Shows "Map coming soon" - requires map implementation |
 
 ---
 
 ## 📜 Change Log
+
+### 2026-01-20 18:51 PST - Comprehensive End-to-End Testing
+
+**Testing Scope:**
+
+- Homepage, City Pages (CPH, LHR), Properties, Auth, Cities list, Place Details
+- Tested as unauthenticated user
+
+**✅ Features Verified Working:**
+
+- City pages with category tabs, search, map/list toggle
+- Properties page with filtering and search
+- Place details with voting and reviews (auth-gated correctly)
+- Sign-in modals for protected actions (Add Place, Add Property)
+- Navigation between all pages
+- All Cities grid display and card navigation
+- Plan My Layover AI modal
+
+**⚠️ Issues Found (6 total):**
+
+| Issue                             | Priority | Location            |
+| --------------------------------- | -------- | ------------------- |
+| Search suggestions don't navigate | High     | Homepage            |
+| Gigs navbar link → `/#about`      | High     | Navbar              |
+| Chat Join button unresponsive     | Medium   | City Page Chats tab |
+| Auth validation missing           | Medium   | Auth Page           |
+| Logo missing emoji                | Low      | Auth Page navbar    |
+| Map placeholder                   | Low      | Property Details    |
+
+**Recordings:** See `/walkthrough.md` for browser session recordings.
+
+---
+
+### 2026-01-20 - UI Improvements & Fixes
+
+**Added:**
+
+- **Persistent Sign-In Modal** - Replaced browser `confirm()` dialog with styled modal
+  - Glassmorphic design matching app theme
+  - "Maybe Later" and "Sign In" buttons
+  - Appears when unauthenticated users click "Add Place" on CityPage
+  - Modal persists until user dismisses it
+- **Clickable Feature Cards** - Made homepage feature cards navigable
+  - Crashpads & Vacation Rentals → `/properties`
+  - Layover Recommendations → `/cities`
+  - Aviation Gigs → `/cities`
+  - Verified Community → `/auth`
+
+**Removed:**
+
+- **Global Search from Navbar** - Removed GlobalSearch component from navbar per user feedback
+  - Component files (`GlobalSearch.tsx`, `GlobalSearch.css`) remain in codebase for potential future use
+
+**Changed:**
+
+- `CityPage.tsx` - Added `showSignInModal` state and styled modal JSX
+- `HomePage.tsx` - Wrapped feature cards with `Link` components
+
+---
 
 ### 2026-01-19 - Search & Filter Features
 

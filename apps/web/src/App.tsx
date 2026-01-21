@@ -15,6 +15,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
 import PropertyDetailsPage from './pages/PropertyDetailsPage';
+import GigsPage from './pages/GigsPage';
+import GigDetailsPage from './pages/GigDetailsPage';
 import './App.css';
 
 function App() {
@@ -34,6 +36,8 @@ function App() {
               path="/property/:propertyId"
               element={<PropertyDetailsPage />}
             />
+            <Route path="/gigs" element={<GigsPage />} />
+            <Route path="/gigs/:gigId" element={<GigDetailsPage />} />
             <Route path="/auth" element={<AuthPage />} />
 
             {/* Chat Route - Protected by Logic inside page or wrap here */}

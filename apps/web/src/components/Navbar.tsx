@@ -21,7 +21,7 @@ const Navbar = ({ transparent = false }: { transparent?: boolean }) => {
           <Link to="/">🏠 Home</Link>
           <Link to="/cities">✈️ Layovers</Link>
           <Link to="/properties">🏠 Properties</Link>
-          <a href="/#about">💼 Gigs</a>
+          <Link to="/gigs">💼 Gigs</Link>
         </div>
         <div className="nav-auth">
           {user ? (

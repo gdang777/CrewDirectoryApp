@@ -16,6 +16,10 @@ import { Place } from '../modules/places/entities/place.entity';
 import { Comment } from '../modules/places/entities/comment.entity';
 import { PlaceVote } from '../modules/places/entities/place-vote.entity';
 
+// Gigs entities
+import { Gig } from '../modules/gigs/entities/gig.entity';
+import { GigApplication } from '../modules/gigs/entities/gig-application.entity';
+
 // Product entities
 import * as productEntities from '../modules/products/entities';
 
@@ -47,6 +51,9 @@ const getDataSourceOptions = (): DataSourceOptions => {
       Place,
       Comment,
       PlaceVote,
+      // Gigs entities
+      Gig,
+      GigApplication,
       // Other module entities
       ...Object.values(productEntities),
       ...Object.values(crewMatchEntities),

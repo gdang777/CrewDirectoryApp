@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ImageUpload from './ImageUpload';
 import './AddCityModal.css';
 
 interface AddCityModalProps {
@@ -7,6 +8,7 @@ interface AddCityModalProps {
     name: string;
     country: string;
     code: string;
+    imageUrl?: string;
   }) => Promise<void>;
 }
 
@@ -14,6 +16,7 @@ const AddCityModal = ({ onClose, onSave }: AddCityModalProps) => {
   const [name, setName] = useState('');
   const [country, setCountry] = useState('');
   const [code, setCode] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +41,7 @@ const AddCityModal = ({ onClose, onSave }: AddCityModalProps) => {
         name: name.trim(),
         country: country.trim(),
         code: code.toUpperCase().trim(),
+        imageUrl: imageUrl || undefined,
       });
       onClose();
     } catch (err) {
@@ -100,6 +104,16 @@ const AddCityModal = ({ onClose, onSave }: AddCityModalProps) => {
             <span className="helper-text">
               The 3-letter IATA airport code for this city
             </span>
+          </div>
+
+          <div className="form-group">
+            <label>City Image (Optional)</label>
+            <ImageUpload
+              onUpload={setImageUrl}
+              category="cities"
+              currentImage={imageUrl}
+              label=""
+            />
           </div>
 
           <div className="form-actions">

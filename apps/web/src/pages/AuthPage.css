@@ -130,6 +130,13 @@
     margin-top: 0.25rem;
 }
 
+.field-error {
+    font-size: 0.8rem;
+    color: #ff5252;
+    margin-top: 0.25rem;
+    display: block;
+}
+
 /* Tabs */
 .auth-tabs {
     display: flex;

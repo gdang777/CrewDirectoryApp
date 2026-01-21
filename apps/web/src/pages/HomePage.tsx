@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { mockCities, mockPlaces } from '../data/mockData';
 import RecommendationsSection from '../components/home/RecommendationsSection';
@@ -7,6 +7,7 @@ import './HomePage.css';
 
 const HomePage = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate();
 
   const filteredCities = mockCities.filter(
     (city) =>
@@ -19,6 +20,17 @@ const HomePage = () => {
   const featuredPlaces = [...mockPlaces]
     .sort((a, b) => b.upvotes - b.downvotes - (a.upvotes - a.downvotes))
     .slice(0, 6);
+
+  const handleCityClick = (cityCode: string) => {
+    navigate(`/city/${cityCode}`);
+    setSearchTerm('');
+  };
+
+  const handleSearchSubmit = () => {
+    if (filteredCities.length > 0) {
+      handleCityClick(filteredCities[0].code);
+    }
+  };
 
   return (
     <div className="home-page">
@@ -47,31 +59,40 @@ const HomePage = () => {
                 placeholder="Search cities or IATA codes..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
+                onKeyDown={(e) => e.key === 'Enter' && handleSearchSubmit()}
               />
               <span className="search-icon">🔍</span>
             </div>
-            <button className="search-btn">Search</button>
-            <div className="search-dropdown-results">
-              {searchTerm && (
+            <button className="search-btn" onClick={handleSearchSubmit}>
+              Search
+            </button>
+            {searchTerm && filteredCities.length > 0 && (
+              <div className="search-dropdown-results">
                 <div className="quick-results">
-                  <div className="result-item">
-                    <strong>DXB</strong> - Dubai
-                  </div>
-                  <div className="result-item">
-                    <strong>LHR</strong> - London
-                  </div>
-                  <div className="result-item">
-                    <strong>SIN</strong> - Singapore
-                  </div>
+                  {filteredCities.slice(0, 5).map((city) => (
+                    <div
+                      key={city.id}
+                      className="result-item"
+                      onClick={() => handleCityClick(city.code)}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) =>
+                        e.key === 'Enter' && handleCityClick(city.code)
+                      }
+                    >
+                      <strong>{city.code}</strong> - {city.name}, {city.country}
+                    </div>
+                  ))}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </header>
+
       {/* Recommendations Section */}
-      <RecommendationsSection cityCode="LHR" />{' '}
-      {/* Default to LHR for demo, or based on user location */}
+      <RecommendationsSection cityCode="LHR" />
+
       {/* Popular Layover Cities */}
       <section id="cities" className="section cities-section">
         <div className="section-container">
@@ -110,6 +131,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
       {/* Featured Listings */}
       <section id="featured" className="section featured-section">
         <div className="section-container">
@@ -151,6 +173,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
       {/* Features Section (Designed Specifically) */}
       <section id="features" className="section features-section">
         <div className="features-bg-gradient"></div>
@@ -161,31 +184,48 @@ const HomePage = () => {
           </h2>
 
           <div className="features-grid-cards">
-            <div className="feature-card-glow">
+            <Link
+              to="/properties"
+              className="feature-card-glow"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="feature-icon home-icon">🏠</div>
               <h3>Crashpads & Vacation Rentals</h3>
               <p>Crashpads & vacation rentals and dorm-style places.</p>
-            </div>
-            <div className="feature-card-glow">
+            </Link>
+            <Link
+              to="/cities"
+              className="feature-card-glow"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="feature-icon location-icon">📍</div>
               <h3>Layover Recommendations</h3>
               <p>Access issues free most layover recommendations.</p>
-            </div>
-            <div className="feature-card-glow">
+            </Link>
+            <Link
+              to="/cities"
+              className="feature-card-glow"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="feature-icon work-icon">💼</div>
               <h3>Aviation Gigs</h3>
               <p>
                 Offer someone carpooling and errands services aviation gigs.
               </p>
-            </div>
-            <div className="feature-card-glow">
+            </Link>
+            <Link
+              to="/auth"
+              className="feature-card-glow"
+              style={{ textDecoration: 'none', color: 'inherit' }}
+            >
               <div className="feature-icon group-icon">👥</div>
               <h3>Verified Community</h3>
               <p>Verified Community connections for verified community.</p>
-            </div>
+            </Link>
           </div>
         </div>
       </section>
+
       <section className="section stats-section">
         <div className="section-container">
           <div className="stats-grid">
@@ -208,6 +248,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
       {/* CTA Section */}
       <section className="cta-section-bottom">
         <div className="section-container">
@@ -220,6 +261,7 @@ const HomePage = () => {
           </div>
         </div>
       </section>
+
       {/* Footer */}
       <footer className="main-footer">
         <div className="section-container">

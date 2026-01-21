@@ -370,6 +370,7 @@ class ApiService {
     name: string;
     country: string;
     code: string;
+    imageUrl?: string;
   }): Promise<City> {
     return this.request<City>('/playbooks/cities', {
       method: 'POST',
@@ -704,6 +705,99 @@ class ApiService {
 
   async getRecommendations(cityCode: string): Promise<Place[]> {
     return this.request<Place[]>(`/ai/recommendations?cityCode=${cityCode}`);
+  }
+
+  // Gigs
+  async getGigs(options?: {
+    cityId?: string;
+    cityCode?: string;
+    category?: string;
+    search?: string;
+    minPayRate?: number;
+    maxPayRate?: number;
+    payType?: string;
+    status?: string;
+    sortBy?: 'newest' | 'oldest' | 'pay_high' | 'pay_low' | 'popular';
+    sortOrder?: 'ASC' | 'DESC';
+    limit?: number;
+    offset?: number;
+  }): Promise<any[]> {
+    const params = new URLSearchParams();
+    if (options?.cityId) params.append('cityId', options.cityId);
+    if (options?.cityCode) params.append('cityCode', options.cityCode);
+    if (options?.category) params.append('category', options.category);
+    if (options?.search) params.append('search', options.search);
+    if (options?.minPayRate !== undefined)
+      params.append('minPayRate', String(options.minPayRate));
+    if (options?.maxPayRate !== undefined)
+      params.append('maxPayRate', String(options.maxPayRate));
+    if (options?.payType) params.append('payType', options.payType);
+    if (options?.status) params.append('status', options.status);
+    if (options?.sortBy) params.append('sortBy', options.sortBy);
+    if (options?.sortOrder) params.append('sortOrder', options.sortOrder);
+    if (options?.limit !== undefined)
+      params.append('limit', String(options.limit));
+    if (options?.offset !== undefined)
+      params.append('offset', String(options.offset));
+    const query = params.toString() ? `?${params.toString()}` : '';
+    return this.request<any[]>(`/gigs${query}`);
+  }
+
+  async getGig(id: string): Promise<any> {
+    return this.request<any>(`/gigs/${id}`);
+  }
+
+  async createGig(data: {
+    title: string;
+    description: string;
+    category: string;
+    cityId: string;
+    payRate: number;
+    payType: string;
+    duration?: string;
+    requirements?: string;
+    imageUrl?: string;
+  }): Promise<any> {
+    return this.request<any>('/gigs', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateGig(id: string, data: any): Promise<any> {
+    return this.request<any>(`/gigs/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteGig(id: string): Promise<void> {
+    await this.request(`/gigs/${id}`, { method: 'DELETE' });
+  }
+
+  async applyToGig(gigId: string, message?: string): Promise<any> {
+    return this.request<any>(`/gigs/${gigId}/apply`, {
+      method: 'POST',
+      body: JSON.stringify({ message }),
+    });
+  }
+
+  async getMyGigApplications(): Promise<any[]> {
+    return this.request<any[]>('/gigs/applications/me');
+  }
+
+  async getGigApplications(gigId: string): Promise<any[]> {
+    return this.request<any[]>(`/gigs/${gigId}/applications`);
+  }
+
+  async updateApplicationStatus(
+    applicationId: string,
+    status: 'accepted' | 'rejected'
+  ): Promise<any> {
+    return this.request<any>(`/gigs/applications/${applicationId}/status`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
   }
 }
 

@@ -72,6 +72,7 @@ export class PlaybooksService {
     country: string;
     code: string;
     coordinates?: { lat: number; lng: number };
+    imageUrl?: string;
   }): Promise<City> {
     // Check if city already exists
     const existing = await this.cityRepository.findOne({
@@ -86,6 +87,7 @@ export class PlaybooksService {
       name: data.name,
       country: data.country,
       code: data.code.toUpperCase(),
+      imageUrl: data.imageUrl,
       coordinates: data.coordinates
         ? {
             type: 'Point' as const,

@@ -164,3 +164,39 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* Sign-In Modal */
+.sign-in-modal {
+    text-align: center;
+}
+
+.sign-in-modal .sign-in-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.sign-in-modal h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.sign-in-modal p {
+    color: #aaa;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.sign-in-modal .modal-actions {
+    justify-content: center;
+}
+
+.sign-in-modal .sign-in-btn {
+    background: linear-gradient(135deg, #00C2FF, #00FF87);
+    color: #0a0a0a;
+    font-weight: 600;
+}
+
+.sign-in-modal .sign-in-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 20px rgba(0, 194, 255, 0.3);
+}
