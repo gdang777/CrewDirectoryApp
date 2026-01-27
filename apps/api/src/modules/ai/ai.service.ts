@@ -35,7 +35,7 @@ export class AiService {
     },
     gemini: {
       baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
-      defaultModel: 'gemini-1.5-flash',
+      defaultModel: 'gemini-2.5-flash',
       envKey: 'GEMINI_API_KEY',
     },
   };
@@ -60,7 +60,7 @@ export class AiService {
 
     if (!apiKey || apiKey.startsWith('sk-your-') || apiKey === 'your-key') {
       this.logger.warn(
-        `⚠️  ${provider.toUpperCase()} API key not configured. AI features will be disabled.`
+        `⚠️  ${selectedProvider.toUpperCase()} API key not configured. AI features will be disabled.`
       );
       this.logger.warn(
         `   Add ${config.envKey} to your .env file to enable AI features.`
@@ -74,7 +74,7 @@ export class AiService {
         });
         this.isConfigured = true;
         this.logger.log(
-          `✅ AI Service initialized with provider: ${provider.toUpperCase()}`
+          `✅ AI Service initialized with provider: ${selectedProvider.toUpperCase()}`
         );
         this.logger.log(`   Model: ${this.model}`);
       } catch (error) {
@@ -144,29 +144,54 @@ export class AiService {
     }
 
     try {
+      this.logger.debug(
+        `[AI] Requesting structured output from model: ${this.model}`
+      );
+
       const response = await this.openai!.chat.completions.create({
         model: this.model,
         messages: [
           {
             role: 'system',
             content:
-              'You are a helpful assistant that outputs valid JSON matching the provided schema.',
+              'You are a helpful assistant. You MUST respond with ONLY valid JSON matching the schema requested. No markdown, no explanation, just the raw JSON object.',
           },
           { role: 'user', content: prompt },
         ],
         temperature: 0.3, // Lower temperature for more consistent structured output
         max_tokens: this.maxTokens,
-        response_format: { type: 'json_object' },
+        // Note: response_format not used - Gemini may not support it
       });
 
       const content = response.choices[0]?.message?.content;
+      this.logger.debug(
+        `[AI] Raw response content: ${content?.substring(0, 200)}...`
+      );
+
       if (!content) {
         throw new Error('No response from AI');
       }
 
-      return JSON.parse(content) as T;
+      // Extract JSON from response - handle markdown code blocks and plain JSON
+      let jsonContent = content.trim();
+
+      // Remove markdown code blocks if present
+      if (jsonContent.startsWith('```json')) {
+        jsonContent = jsonContent.slice(7);
+      } else if (jsonContent.startsWith('```')) {
+        jsonContent = jsonContent.slice(3);
+      }
+      if (jsonContent.endsWith('```')) {
+        jsonContent = jsonContent.slice(0, -3);
+      }
+      jsonContent = jsonContent.trim();
+
+      this.logger.debug(
+        `[AI] Cleaned JSON: ${jsonContent.substring(0, 200)}...`
+      );
+
+      return JSON.parse(jsonContent) as T;
     } catch (error) {
-      this.logger.error('Failed to generate structured output:', error);
       this.logger.error('Failed to generate structured output:', error);
       throw new BadRequestException(
         `Failed to generate structured response: ${error instanceof Error ? error.message : 'Unknown error'}`

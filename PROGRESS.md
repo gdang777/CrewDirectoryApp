@@ -1,6 +1,6 @@
 # Crew Lounge - Development Progress
 
-> **Last Updated:** 2026-01-21  
+> **Last Updated:** 2026-01-27 (AI Integration Fix)  
 > **Status:** Active Development
 
 ---
@@ -216,6 +216,27 @@ _No features currently in progress_
 ---
 
 ## 📜 Change Log
+
+### 2026-01-27 - AI Itinerary Integration with Gemini 2.5 Flash ✨ NEW
+
+**Fixed:**
+
+- AI itinerary generator now uses **Gemini 2.5 Flash** instead of OpenAI
+- JSON response truncation fixed by increasing `AI_MAX_TOKENS` to 4000
+- Removed unsupported `response_format` option for Gemini compatibility
+- Added robust markdown JSON extraction for parsing responses
+
+**Result:**
+
+- AI generates real, personalized itineraries with specific places (Nyhavn, Torvehallerne, Amalienborg, Rundetårn)
+- No more "Offline Mode" fallback when Gemini API is configured
+
+**Files Modified:**
+
+- `apps/api/.env` - Gemini provider configuration
+- `apps/api/src/modules/ai/ai.service.ts` - Multi-provider support + JSON parsing
+
+---
 
 ### 2026-01-20 18:51 PST - Comprehensive End-to-End Testing
 

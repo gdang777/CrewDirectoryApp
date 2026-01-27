@@ -2,6 +2,23 @@
 
 ## [Unreleased]
 
+### AI Itinerary Integration with Gemini 2.5 Flash (Feature Complete)
+
+- **Date**: 2026-01-27
+- **Status**: **COMPLETE**
+- **Description**: Fixed the AI-powered layover itinerary generator to use Gemini 2.5 Flash instead of OpenAI.
+- **Root Causes Fixed**:
+  - **Missing Gemini Configuration**: Added `AI_PROVIDER=gemini` and `AI_MODEL=gemini-2.5-flash` to `.env`
+  - **JSON Truncation**: Increased `AI_MAX_TOKENS` from 1000 to 4000 to prevent responses from being cut off
+  - **Response Parsing**: Removed unsupported `response_format` option and added robust markdown JSON extraction
+- **Technical Changes**:
+  - Updated `apps/api/.env` with Gemini provider settings
+  - Updated `apps/api/src/modules/ai/ai.service.ts` with multi-provider support and JSON parsing logic
+  - Added debug logging to diagnose API responses
+- **Result**: AI now generates real, personalized itineraries with specific place recommendations (Nyhavn, Torvehallerne, Amalienborg, Rundetårn) instead of falling back to "Offline Mode" templates
+
+---
+
 ### Layovers/Gigs Feature (Feature Complete)
 
 - **Date**: 2026-01-21

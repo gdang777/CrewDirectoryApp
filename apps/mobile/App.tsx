@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import PlaybooksScreen from './src/screens/PlaybooksScreen';
+import { PlaybooksScreen } from './src/screens/PlaybooksScreen';
 
 export default function App() {
   return (
